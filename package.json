@@ -2,6 +2,7 @@
   "name": "botonera",
   "version": "1.0.0",
   "private": true,
+  "author": "Marian Morelli",
   "description": "Botonera de sonidos personalizada (PWA): audios propios, WhatsApp, YouTube y Spotify.",
   "type": "module",
   "scripts": {

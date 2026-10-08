@@ -63,7 +63,7 @@ button { cursor: pointer; }
 .link-btn { background: none; border: 0; color: var(--accent); font-weight: 600; text-decoration: underline; padding: 0; }
 
 /* ---------- Botonera ---------- */
-main { padding: 8px 16px calc(110px + var(--safe-bottom)); }
+main { padding: 8px 16px 28px; }
 .board {
   display: grid; gap: 14px;
   grid-template-columns: repeat(auto-fill, minmax(min(140px, calc(50% - 7px)), 1fr));
@@ -244,3 +244,26 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
   width: max-content; max-width: calc(100% - 32px); padding: 12px 18px; border-radius: 14px;
   background: #fff; color: #16131f; font-weight: 600; box-shadow: 0 10px 30px #0008;
 }
+
+/* ---------- Instalar / créditos ---------- */
+.install-banner {
+  margin: 0 16px 10px; padding: 12px 12px 12px 14px; border-radius: 16px;
+  display: flex; align-items: center; gap: 12px;
+  background: linear-gradient(120deg, #4361ee33, #9b5de533); border: 1px solid #ffffff1a;
+}
+.install-icon { font-size: 1.8rem; }
+.install-banner > span:nth-child(2) { flex: 1; min-width: 0; }
+.install-banner strong { display: block; }
+.install-banner small { color: var(--muted); font-size: 0.82rem; }
+.install-banner .primary { padding: 10px 14px; white-space: nowrap; }
+@media (max-width: 380px) { .install-banner small { display: none; } }
+
+.credits {
+  text-align: center; color: var(--muted); font-size: 0.8rem;
+  padding: 0 16px calc(100px + var(--safe-bottom));
+}
+.credits strong { color: var(--text); }
+
+.about { display: grid; justify-items: center; text-align: center; gap: 4px; padding-bottom: 8px; }
+.about img { border-radius: 22px; }
+.about .author { font-size: 1.05rem; margin: 6px 0 0; }

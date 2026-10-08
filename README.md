@@ -9,6 +9,8 @@ Botonera de sonidos personalizada. Cada persona arma la suya con:
 - **Grabación** con el micrófono.
 - **Links directos** a un audio (si el sitio lo permite, se descarga para usarlo sin conexión).
 
+Desarrollada por **Marian Morelli**.
+
 Es una **PWA** (app web instalable): se instala en Android, iPhone y la compu, funciona sin internet
 y guarda todo **en el dispositivo** (IndexedDB). No necesita servidor ni cuentas.
 

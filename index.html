@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Botonera</title>
   <meta name="description" content="Tu botonera de sonidos: audios propios, de WhatsApp, YouTube y Spotify.">
+  <meta name="author" content="Marian Morelli">
   <meta name="theme-color" content="#14121f">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
@@ -24,12 +25,20 @@
       <div class="menu" id="menu" role="menu" hidden>
         <label class="menu-item" role="menuitemcheckbox"><input type="checkbox" id="opt-overlap" checked> Que suenen varios a la vez</label>
         <button class="menu-item" role="menuitem" data-action="whatsapp-help">💬 Cómo sumar audios de WhatsApp</button>
-        <button class="menu-item" role="menuitem" data-action="install" hidden>📲 Instalar la app</button>
+        <button class="menu-item" role="menuitem" data-action="install">📲 Instalar la app</button>
         <button class="menu-item" role="menuitem" data-action="export">💾 Exportar botonera</button>
         <button class="menu-item" role="menuitem" data-action="import">📂 Importar botonera</button>
+        <button class="menu-item" role="menuitem" data-action="about">ℹ️ Acerca de</button>
       </div>
     </div>
   </header>
+
+  <div class="install-banner" id="install-banner" hidden>
+    <span class="install-icon" aria-hidden="true">📲</span>
+    <span><strong>Instalá la Botonera</strong><small>Queda en tu inicio y funciona sin internet.</small></span>
+    <button class="primary" data-action="install">Instalar</button>
+    <button class="icon-btn small" id="install-dismiss" aria-label="Ahora no">✕</button>
+  </div>
 
   <div class="edit-banner" id="edit-banner" hidden>
     Modo edición: tocá un botón para cambiarlo. En la compu podés arrastrarlos para ordenarlos.
@@ -50,6 +59,8 @@
       </ul>
     </section>
   </main>
+
+  <footer class="credits">Desarrollada por <strong>Marian Morelli</strong></footer>
 
   <button class="fab" id="add-btn" data-action="add" aria-label="Agregar sonido">＋ <span>Agregar</span></button>
 
@@ -192,6 +203,53 @@
         <li><strong>Arrastralo</strong> a la Botonera o usá ＋ Agregar.</li>
       </ol>
       <p class="hint">También funciona con Telegram, grabadoras, mails o cualquier app que comparta audios.</p>
+    </div>
+  </dialog>
+
+  <!-- Instalar -->
+  <dialog class="sheet" id="install-dialog">
+    <header class="sheet-head">
+      <h2>📲 Instalar la Botonera</h2>
+      <button class="icon-btn small" data-close aria-label="Cerrar">✕</button>
+    </header>
+    <div class="help">
+      <section data-platform="ios">
+        <h3>iPhone / iPad (Safari)</h3>
+        <ol>
+          <li>Tocá el botón <strong>Compartir</strong> de Safari (el cuadrado con la flecha ⬆️).</li>
+          <li>Bajá y elegí <strong>Agregar a inicio</strong>.</li>
+          <li>Tocá <strong>Agregar</strong>. Vas a ver el ícono de la Botonera en tu pantalla.</li>
+        </ol>
+        <p class="hint">Si lo abriste desde otra app (WhatsApp, Instagram…), primero abrilo en Safari.</p>
+      </section>
+      <section data-platform="android">
+        <h3>Android (Chrome, Edge o Samsung Internet)</h3>
+        <ol>
+          <li>Tocá el menú <strong>⋮</strong> del navegador.</li>
+          <li>Elegí <strong>Instalar app</strong> o <strong>Agregar a la pantalla principal</strong>.</li>
+        </ol>
+      </section>
+      <section data-platform="desktop">
+        <h3>Computadora (Chrome o Edge)</h3>
+        <ol>
+          <li>Hacé clic en el ícono de instalar (🖥️⬇) a la derecha de la barra de direcciones,</li>
+          <li>o en el menú <strong>⋮ → Guardar y compartir → Instalar Botonera</strong>.</li>
+        </ol>
+      </section>
+    </div>
+  </dialog>
+
+  <!-- Acerca de -->
+  <dialog class="sheet" id="about-dialog">
+    <header class="sheet-head">
+      <h2>🔊 Botonera</h2>
+      <button class="icon-btn small" data-close aria-label="Cerrar">✕</button>
+    </header>
+    <div class="about">
+      <img src="icons/icon-192.png" alt="" width="96" height="96">
+      <p>Tu botonera de sonidos: audios propios, de WhatsApp, YouTube y Spotify.</p>
+      <p class="author">Desarrollada por <strong>Marian Morelli</strong></p>
+      <p class="hint">Tus audios se guardan solo en este dispositivo.</p>
     </div>
   </dialog>
 

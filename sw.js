@@ -1,5 +1,5 @@
 // Service worker: funciona sin conexión y recibe audios/links desde "Compartir" (Web Share Target).
-const CACHE = 'botonera-v1';
+const CACHE = 'botonera-v2';
 const SHELL = [
   './', './index.html', './styles.css', './manifest.webmanifest',
   './src/app.js', './src/db.js', './src/player.js', './src/recorder.js', './src/sources.js',

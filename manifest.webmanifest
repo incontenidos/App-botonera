@@ -1,7 +1,7 @@
 {
   "name": "Botonera de sonidos",
   "short_name": "Botonera",
-  "description": "Tu botonera de sonidos: audios propios, de WhatsApp, YouTube y Spotify.",
+  "description": "Tu botonera de sonidos: audios propios, de WhatsApp, YouTube y Spotify. Desarrollada por Marian Morelli.",
   "id": "./",
   "start_url": "./",
   "scope": "./",

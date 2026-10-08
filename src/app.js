@@ -17,6 +17,9 @@ const els = {
   empty: $('#empty'),
   dialog: $('#sound-dialog'),
   help: $('#help-dialog'),
+  install: $('#install-dialog'),
+  about: $('#about-dialog'),
+  installBanner: $('#install-banner'),
   details: $('#details-form'),
   linkForm: $('#link-form'),
   linkInput: $('#link-input'),
@@ -478,12 +481,8 @@ function bindEvents() {
     if (action === 'whatsapp-help') openWhatsAppHelp();
     if (action === 'export') exportBoard();
     if (action === 'import') { closeMenu(); els.importInput.click(); }
-    if (action === 'install') {
-      closeMenu();
-      state.installPrompt?.prompt();
-      state.installPrompt = null;
-      $('[data-action="install"]').hidden = true;
-    }
+    if (action === 'install') install();
+    if (action === 'about') { closeMenu(); els.about.showModal(); }
     if (!e.target.closest('#menu, #menu-btn')) closeMenu();
   });
 
@@ -551,7 +550,7 @@ function bindEvents() {
   });
 
   // Diálogo
-  for (const d of [els.dialog, els.help]) {
+  for (const d of [els.dialog, els.help, els.install, els.about]) {
     d.addEventListener('click', (e) => {
       if (e.target.closest('[data-close]') || e.target === d) d.close();
     });
@@ -680,7 +679,7 @@ function bindEvents() {
 
   // Teclado: 1..9, 0 disparan los primeros sonidos; Esc para todo.
   document.addEventListener('keydown', (e) => {
-    if (els.dialog.open || els.help.open || e.ctrlKey || e.metaKey || e.altKey || e.target.closest?.('input, textarea')) return;
+    if ($$('dialog').some((d) => d.open) || e.ctrlKey || e.metaKey || e.altKey || e.target.closest?.('input, textarea')) return;
     if (e.key === 'Escape') return player.stopAll();
     if (/^[0-9]$/.test(e.key)) {
       const sound = state.sounds[(Number(e.key) + 9) % 10];
@@ -691,8 +690,57 @@ function bindEvents() {
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     state.installPrompt = e;
-    $('[data-action="install"]').hidden = false;
+    updateInstallUI();
   });
+  window.addEventListener('appinstalled', () => {
+    state.installPrompt = null;
+    updateInstallUI();
+    toast('¡Listo! La Botonera quedó instalada.');
+  });
+  $('#install-dismiss').addEventListener('click', () => {
+    try { localStorage.setItem('botonera.installDismissed', String(Date.now())); } catch { /* modo privado */ }
+    updateInstallUI();
+  });
+}
+
+// ---------- Instalación ----------
+
+const isInstalled = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+
+function platform() {
+  const ua = navigator.userAgent;
+  if (/iphone|ipad|ipod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) return 'ios';
+  if (/android/i.test(ua)) return 'android';
+  return 'desktop';
+}
+
+function installDismissed() {
+  try {
+    const at = Number(localStorage.getItem('botonera.installDismissed'));
+    return at && Date.now() - at < 14 * 24 * 3600 * 1000; // vuelve a ofrecerlo a las 2 semanas
+  } catch { return false; }
+}
+
+/** El aviso aparece solo donde instalar es posible: con el instalador del navegador o en iPhone (pasos guiados). */
+function updateInstallUI() {
+  const installed = isInstalled();
+  for (const b of $$('.menu [data-action="install"]')) b.hidden = installed;
+  els.installBanner.hidden = installed || installDismissed() || !(state.installPrompt || platform() === 'ios');
+}
+
+async function install() {
+  closeMenu();
+  const prompt = state.installPrompt;
+  if (prompt) {
+    state.installPrompt = null;
+    prompt.prompt();
+    await prompt.userChoice.catch(() => null);
+    updateInstallUI();
+    return;
+  }
+  const current = platform();
+  for (const sec of $$('[data-platform]', els.install)) sec.hidden = sec.dataset.platform !== current;
+  els.install.showModal();
 }
 
 // ---------- Inicio ----------
@@ -711,6 +759,7 @@ async function checkInbox() {
 
 async function init() {
   bindEvents();
+  updateInstallUI();
   try {
     state.sounds = await getAllSounds();
   } catch (e) {
