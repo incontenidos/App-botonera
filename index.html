@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Botonera</title>
+  <meta name="description" content="Tu botonera de sonidos: audios propios, de WhatsApp, YouTube y Spotify.">
+  <meta name="theme-color" content="#14121f">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="src/app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <h1 class="brand"><span aria-hidden="true">🔊</span> Botonera</h1>
+    <div class="topbar-actions">
+      <button class="icon-btn" id="stop-all" title="Parar todo (Esc)" aria-label="Parar todo">⏹</button>
+      <button class="icon-btn" id="edit-toggle" aria-pressed="false" title="Editar botonera">✏️</button>
+      <button class="icon-btn" id="menu-btn" aria-haspopup="menu" aria-expanded="false" aria-label="Más opciones">⋯</button>
+      <div class="menu" id="menu" role="menu" hidden>
+        <label class="menu-item" role="menuitemcheckbox"><input type="checkbox" id="opt-overlap" checked> Que suenen varios a la vez</label>
+        <button class="menu-item" role="menuitem" data-action="whatsapp-help">💬 Cómo sumar audios de WhatsApp</button>
+        <button class="menu-item" role="menuitem" data-action="install" hidden>📲 Instalar la app</button>
+        <button class="menu-item" role="menuitem" data-action="export">💾 Exportar botonera</button>
+        <button class="menu-item" role="menuitem" data-action="import">📂 Importar botonera</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="edit-banner" id="edit-banner" hidden>
+    Modo edición: tocá un botón para cambiarlo. En la compu podés arrastrarlos para ordenarlos.
+    <button class="link-btn" id="edit-done">Listo</button>
+  </div>
+
+  <main>
+    <div class="board" id="board" aria-live="polite"></div>
+
+    <section class="empty" id="empty" hidden>
+      <div class="empty-emoji" aria-hidden="true">🎛️</div>
+      <h2>Armá tu botonera</h2>
+      <p>Agregá audios de tu celu, grabá con el micrófono, o pegá un link de YouTube o Spotify.</p>
+      <button class="primary big" data-action="add">＋ Agregar el primer sonido</button>
+      <ul class="tips">
+        <li><strong>WhatsApp:</strong> compartí el audio y elegí “Botonera”. <button class="link-btn" data-action="whatsapp-help">¿Cómo?</button></li>
+        <li><strong>En la compu:</strong> arrastrá archivos acá o pegá (Ctrl+V) un link.</li>
+      </ul>
+    </section>
+  </main>
+
+  <button class="fab" id="add-btn" data-action="add" aria-label="Agregar sonido">＋ <span>Agregar</span></button>
+
+  <section class="dock" id="dock" hidden aria-label="Reproductor">
+    <header class="dock-head">
+      <span class="dock-title" data-dock-title></span>
+      <button class="icon-btn small" data-dock-close aria-label="Cerrar reproductor">✕</button>
+    </header>
+    <div class="dock-yt"><div data-yt></div></div>
+    <div class="dock-spotify"><div data-spotify></div></div>
+  </section>
+
+  <div class="drop-overlay" id="drop-overlay" hidden>
+    <div>🎧<br>Soltá los audios acá</div>
+  </div>
+
+  <!-- Agregar / editar sonido -->
+  <dialog class="sheet" id="sound-dialog">
+    <div class="step" data-step="source">
+      <header class="sheet-head">
+        <h2>Agregar sonido</h2>
+        <button class="icon-btn small" data-close aria-label="Cerrar">✕</button>
+      </header>
+      <div class="sources">
+        <button class="source" data-source="file">
+          <span class="source-icon">📁</span>
+          <span><strong>Audio del dispositivo</strong><small>MP3, WhatsApp (.opus), M4A, WAV, video…</small></span>
+        </button>
+        <button class="source" data-source="record">
+          <span class="source-icon">🎙️</span>
+          <span><strong>Grabar ahora</strong><small>Usá el micrófono</small></span>
+        </button>
+        <button class="source" data-action="whatsapp-help">
+          <span class="source-icon">💬</span>
+          <span><strong>Desde WhatsApp</strong><small>Cómo traer notas de voz y audios</small></span>
+        </button>
+      </div>
+      <form class="link-form" id="link-form" novalidate>
+        <label for="link-input"><strong>Link de YouTube, Spotify o de un audio</strong></label>
+        <div class="row">
+          <input id="link-input" type="text" inputmode="url" autocomplete="off" placeholder="https://youtu.be/…  o  https://open.spotify.com/…">
+          <button type="button" class="secondary" id="paste-btn">Pegar</button>
+        </div>
+        <button type="submit" class="primary">Usar link</button>
+      </form>
+    </div>
+
+    <div class="step" data-step="record" hidden>
+      <header class="sheet-head">
+        <button class="icon-btn small" data-back aria-label="Volver">←</button>
+        <h2>Grabar</h2>
+        <button class="icon-btn small" data-close aria-label="Cerrar">✕</button>
+      </header>
+      <div class="recorder">
+        <div class="rec-time" id="rec-time">0:00</div>
+        <button class="rec-btn" id="rec-btn" aria-label="Empezar a grabar"><span></span></button>
+        <p class="hint" id="rec-hint">Tocá el círculo para empezar.</p>
+      </div>
+    </div>
+
+    <form class="step" data-step="details" id="details-form" hidden>
+      <header class="sheet-head">
+        <button type="button" class="icon-btn small" data-back aria-label="Volver">←</button>
+        <h2 id="details-title">Nuevo sonido</h2>
+        <button type="button" class="icon-btn small" data-close aria-label="Cerrar">✕</button>
+      </header>
+
+      <p class="source-line" id="source-line"></p>
+
+      <div class="preview-pad">
+        <button type="button" class="pad" id="preview-pad"></button>
+        <p class="hint">Tocá para escuchar</p>
+      </div>
+
+      <label class="field">Nombre
+        <input name="name" required maxlength="40" autocomplete="off">
+      </label>
+
+      <div class="field">Ícono
+        <div class="emoji-row">
+          <input name="emoji" class="emoji-input" maxlength="8" autocomplete="off" aria-label="Emoji">
+          <div class="emoji-picks" id="emoji-picks"></div>
+        </div>
+      </div>
+
+      <div class="field">Color
+        <div class="swatches" id="swatches"></div>
+      </div>
+
+      <details class="advanced">
+        <summary>Recortar, volumen y repetición</summary>
+        <div class="row two">
+          <label class="field">Desde (seg o m:ss)
+            <input name="start" inputmode="decimal" placeholder="0:00" autocomplete="off">
+          </label>
+          <label class="field">Hasta
+            <input name="end" inputmode="decimal" placeholder="hasta el final" autocomplete="off">
+          </label>
+        </div>
+        <p class="hint" id="duration-hint"></p>
+        <label class="field">Volumen
+          <input name="volume" type="range" min="0.05" max="1" step="0.05" value="1">
+        </label>
+        <label class="check"><input type="checkbox" name="loop"> Repetir en loop hasta que lo pares</label>
+      </details>
+
+      <div class="edit-only row">
+        <button type="button" class="secondary" data-move="-1">← Mover</button>
+        <button type="button" class="secondary" data-move="1">Mover →</button>
+        <button type="button" class="danger" id="delete-btn">Borrar</button>
+      </div>
+
+      <button type="submit" class="primary big">Guardar</button>
+    </form>
+  </dialog>
+
+  <!-- Ayuda WhatsApp -->
+  <dialog class="sheet" id="help-dialog">
+    <header class="sheet-head">
+      <h2>💬 Audios de WhatsApp</h2>
+      <button class="icon-btn small" data-close aria-label="Cerrar">✕</button>
+    </header>
+    <div class="help">
+      <h3>Android (lo más rápido)</h3>
+      <ol>
+        <li>Instalá la Botonera: menú <strong>⋯ → Instalar la app</strong> (o “Agregar a pantalla de inicio” en Chrome).</li>
+        <li>En WhatsApp, <strong>mantené apretado</strong> el audio.</li>
+        <li>Tocá <strong>Compartir</strong> (↗ o ⋮ → Compartir) y elegí <strong>Botonera</strong>.</li>
+        <li>Ponele nombre y emoji. ¡Listo!</li>
+      </ol>
+      <h3>iPhone</h3>
+      <ol>
+        <li>En WhatsApp, mantené apretado el audio → <strong>Reenviar</strong> → ícono <strong>Compartir</strong> (cuadrado con flecha).</li>
+        <li>Elegí <strong>Guardar en Archivos</strong>.</li>
+        <li>En la Botonera: <strong>＋ Agregar → Audio del dispositivo</strong> y elegí el archivo.</li>
+      </ol>
+      <h3>WhatsApp Web o de escritorio</h3>
+      <ol>
+        <li>Descargá el audio (menú del mensaje → Descargar).</li>
+        <li><strong>Arrastralo</strong> a la Botonera o usá ＋ Agregar.</li>
+      </ol>
+      <p class="hint">También funciona con Telegram, grabadoras, mails o cualquier app que comparta audios.</p>
+    </div>
+  </dialog>
+
+  <input type="file" id="file-input" accept="audio/*,video/*,.opus,.ogg,.oga,.m4a,.amr,.aac,.mp3,.wav,.webm,.flac,.3gp,.caf" multiple hidden>
+  <input type="file" id="import-input" accept=".json,application/json" hidden>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

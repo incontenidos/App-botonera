@@ -1,0 +1,11 @@
+{
+  "name": "botonera",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Botonera de sonidos personalizada (PWA): audios propios, WhatsApp, YouTube y Spotify.",
+  "type": "module",
+  "scripts": {
+    "start": "npx --yes serve -l 5173 .",
+    "test": "node --test test/*.test.js"
+  }
+}
