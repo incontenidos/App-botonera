@@ -1,11 +1,11 @@
 // Modo Función: lista de cues para pasar el sonido de una obra con un botón GO.
 
-import { getAllShows, putShow, deleteShow } from './db.js';
-import { ShowEngine } from './show-engine.js';
+import { getAllShows, putShow, deleteShow } from './db.js?v=1.3';
+import { ShowEngine } from './show-engine.js?v=1.3';
 import {
   CONTINUE, clampDb, formatDb, goFrom, followAfter, effectiveDuration, clock,
-} from './cues.js';
-import { parseTime, formatTime, isAudioFile, guessMime } from './sources.js';
+} from './cues.js?v=1.3';
+import { parseTime, formatTime, isAudioFile, guessMime } from './sources.js?v=1.3';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -13,8 +13,8 @@ const uid = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now().toStr
 
 const CONTINUE_LABEL = {
   [CONTINUE.WAIT]: { icon: '✋', text: 'Espera GO', title: 'Espera el próximo GO' },
-  [CONTINUE.FOLLOW]: { icon: '↳', text: 'Al terminar', title: 'Al terminar, entra el siguiente' },
-  [CONTINUE.AUTO]: { icon: '⇉', text: 'Junto', title: 'El siguiente entra junto con este' },
+  [CONTINUE.FOLLOW]: { icon: '↳', text: 'Continuado', title: 'Al terminar, entra el siguiente' },
+  [CONTINUE.AUTO]: { icon: '⇉', text: 'Junto al siguiente', title: 'El siguiente entra junto con este' },
 };
 
 const safeStorage = {
@@ -252,9 +252,9 @@ export function initShow({ toast, getSounds }) {
       const cells = [
         ['cue-num', String(i + 1)],
         ['cue-desc', null],
-        ['cue-dur', clock(effectiveDuration(cue))],
-        ['cue-db', cue.kind === 'stop' ? '' : formatDb(cue.db)],
-        ['cue-loop', cue.loop ? '🔁' : ''],
+        ['cue-dur', `⏱ ${clock(effectiveDuration(cue))}`],
+        ['cue-db', cue.kind === 'stop' ? '' : `🔊 ${formatDb(cue.db)}`],
+        ['cue-loop', cue.loop ? '🔁 Loop' : ''],
         ['cue-cont', `${cont.icon} ${cont.text}`],
       ];
       for (const [cls, text] of cells) {

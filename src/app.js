@@ -1,10 +1,10 @@
-import { getAllSounds, putSounds, deleteSound, takeInbox } from './db.js';
-import { Player } from './player.js';
-import { canRecord, startRecording } from './recorder.js';
-import { initShow } from './show.js';
+import { getAllSounds, putSounds, deleteSound, takeInbox } from './db.js?v=1.3';
+import { Player } from './player.js?v=1.3';
+import { canRecord, startRecording } from './recorder.js?v=1.3';
+import { initShow } from './show.js?v=1.3';
 import {
   parseMediaUrl, parseTime, formatTime, isAudioFile, guessMime, isWhatsAppFile, friendlyName, extractFirstUrl,
-} from './sources.js';
+} from './sources.js?v=1.3';
 
 const COLORS = ['#ff5d73', '#ff9f1c', '#ffd23f', '#3ddc97', '#2ec4b6', '#4cc9f0', '#4361ee', '#9b5de5', '#f15bb5', '#8d99ae'];
 const EMOJIS = ['🔊', '😂', '👏', '🥁', '📯', '💥', '🎺', '😱', '🐐', '🤡', '💬', '🎵', '🔥', '💀', '🙌', '❌'];

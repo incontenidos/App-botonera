@@ -57,6 +57,14 @@ npm test       # tests de reconocimiento de links / archivos
 Para usarla en el celular hay que publicarla con **HTTPS** (requisito de las PWAs): GitHub Pages,
 Netlify, Vercel, Cloudflare Pages, etc. Basta con subir la carpeta tal cual (funciona también en una subcarpeta).
 
+### Publicar una versión nueva
+
+Antes de subir cambios, subí el número de versión (evita que los celulares mezclen archivos viejos y nuevos):
+
+```bash
+npm run version:set -- 1.4
+```
+
 ## Cómo funciona
 
 ```

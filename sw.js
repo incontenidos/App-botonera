@@ -1,5 +1,7 @@
 // Service worker: funciona sin conexión y recibe audios/links desde "Compartir" (Web Share Target).
-const CACHE = 'botonera-v3';
+// Cambiar este número en cada versión publicada: así el navegador instala el service worker nuevo.
+const VERSION = '1.3';
+const CACHE = `botonera-${VERSION}`;
 const SHELL = [
   './', './index.html', './styles.css', './manifest.webmanifest',
   './src/app.js', './src/db.js', './src/player.js', './src/recorder.js', './src/sources.js',
@@ -8,15 +10,26 @@ const SHELL = [
 ];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
+  // cache: 'reload' saltea la caché HTTP (GitHub Pages guarda archivos hasta 10 min) y evita mezclar versiones.
+  event.waitUntil(
+    caches.open(CACHE)
+      .then((c) => c.addAll(SHELL.map((u) => new Request(u, { cache: 'reload' }))))
+      .then(() => self.skipWaiting()),
+  );
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
-      .then(() => self.clients.claim()),
-  );
+  event.waitUntil((async () => {
+    const old = (await caches.keys()).filter((k) => k !== CACHE);
+    await Promise.all(old.map((k) => caches.delete(k)));
+    await self.clients.claim();
+    // Si es una actualización (había una versión anterior), recargamos las pestañas abiertas
+    // para que no queden con una mezcla de archivos viejos y nuevos.
+    if (old.length) {
+      const wins = await self.clients.matchAll({ type: 'window' });
+      await Promise.all(wins.map((w) => w.navigate(w.url).catch(() => {})));
+    }
+  })());
 });
 
 self.addEventListener('fetch', (event) => {
@@ -29,9 +42,12 @@ self.addEventListener('fetch', (event) => {
   }
   if (request.method !== 'GET' || url.origin !== self.location.origin) return;
 
-  // Red primero (para tener siempre la última versión) y caché si no hay conexión.
+  // Red primero, revalidando siempre con el servidor (no-cache), y caché propia si no hay conexión.
+  const fresh = request.mode === 'navigate'
+    ? fetch(request.url, { cache: 'no-cache', credentials: 'same-origin' })
+    : fetch(request, { cache: 'no-cache' });
   event.respondWith(
-    fetch(request)
+    fresh
       .then((res) => {
         if (res.ok) {
           const copy = res.clone();
@@ -39,7 +55,7 @@ self.addEventListener('fetch', (event) => {
         }
         return res;
       })
-      .catch(() => caches.match(request, { ignoreSearch: request.mode === 'navigate' })
+      .catch(() => caches.match(request, { ignoreSearch: true })
         .then((hit) => hit || caches.match('./index.html'))),
   );
 });
