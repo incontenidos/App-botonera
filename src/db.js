@@ -2,7 +2,7 @@
 // OJO: sw.js abre la misma base (store "inbox"); si cambiás DB_VERSION o los stores, actualizalo también ahí.
 
 export const DB_NAME = 'botonera-db';
-export const DB_VERSION = 1;
+export const DB_VERSION = 2;
 
 let dbPromise;
 
@@ -13,8 +13,13 @@ export function openDB() {
       const db = req.result;
       if (!db.objectStoreNames.contains('sounds')) db.createObjectStore('sounds', { keyPath: 'id' });
       if (!db.objectStoreNames.contains('inbox')) db.createObjectStore('inbox', { keyPath: 'id', autoIncrement: true });
+      if (!db.objectStoreNames.contains('shows')) db.createObjectStore('shows', { keyPath: 'id' });
     };
-    req.onsuccess = () => resolve(req.result);
+    req.onsuccess = () => {
+      // Si otra pestaña actualiza la base, cerramos para no bloquearla.
+      req.result.onversionchange = () => { req.result.close(); dbPromise = null; };
+      resolve(req.result);
+    };
     req.onerror = () => reject(req.error);
   });
   return dbPromise;
@@ -52,6 +57,28 @@ export async function deleteSound(id) {
   const db = await openDB();
   const tx = db.transaction('sounds', 'readwrite');
   tx.objectStore('sounds').delete(id);
+  return done(tx);
+}
+
+// ---------- Funciones (Modo Función) ----------
+
+export async function getAllShows() {
+  const db = await openDB();
+  const all = await result(db.transaction('shows').objectStore('shows').getAll());
+  return all.sort((a, b) => a.createdAt - b.createdAt);
+}
+
+export async function putShow(show) {
+  const db = await openDB();
+  const tx = db.transaction('shows', 'readwrite');
+  tx.objectStore('shows').put(show);
+  return done(tx);
+}
+
+export async function deleteShow(id) {
+  const db = await openDB();
+  const tx = db.transaction('shows', 'readwrite');
+  tx.objectStore('shows').delete(id);
   return done(tx);
 }
 

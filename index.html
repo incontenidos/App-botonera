@@ -19,18 +19,27 @@
   <header class="topbar">
     <h1 class="brand"><span aria-hidden="true">🔊</span> Botonera</h1>
     <div class="topbar-actions">
-      <button class="icon-btn" id="stop-all" title="Parar todo (Esc)" aria-label="Parar todo">⏹</button>
-      <button class="icon-btn" id="edit-toggle" aria-pressed="false" title="Editar botonera">✏️</button>
+      <button class="icon-btn board-only" id="stop-all" title="Parar todo (Esc)" aria-label="Parar todo">⏹</button>
+      <button class="icon-btn board-only" id="edit-toggle" aria-pressed="false" title="Editar botonera">✏️</button>
       <button class="icon-btn" id="menu-btn" aria-haspopup="menu" aria-expanded="false" aria-label="Más opciones">⋯</button>
       <div class="menu" id="menu" role="menu" hidden>
-        <label class="menu-item" role="menuitemcheckbox"><input type="checkbox" id="opt-overlap" checked> Que suenen varios a la vez</label>
+        <label class="menu-item board-only" role="menuitemcheckbox"><input type="checkbox" id="opt-overlap" checked> Que suenen varios a la vez</label>
         <button class="menu-item" role="menuitem" data-action="whatsapp-help">💬 Cómo sumar audios de WhatsApp</button>
         <button class="menu-item" role="menuitem" data-action="install">📲 Instalar la app</button>
-        <button class="menu-item" role="menuitem" data-action="export">💾 Exportar botonera</button>
-        <button class="menu-item" role="menuitem" data-action="import">📂 Importar botonera</button>
+        <button class="menu-item board-only" role="menuitem" data-action="export">💾 Exportar botonera</button>
+        <button class="menu-item board-only" role="menuitem" data-action="import">📂 Importar botonera</button>
+        <button class="menu-item show-only" role="menuitem" data-show-action="rename">✏️ Renombrar función</button>
+        <button class="menu-item show-only" role="menuitem" data-show-action="export">💾 Exportar función</button>
+        <button class="menu-item show-only" role="menuitem" data-show-action="import">📂 Importar función</button>
+        <button class="menu-item show-only" role="menuitem" data-show-action="delete">🗑️ Borrar función</button>
+        <label class="menu-item show-only">Fade all en <input type="number" id="fade-all-secs" min="0.5" max="30" step="0.5" value="3" class="mini-input"> seg</label>
         <button class="menu-item" role="menuitem" data-action="about">ℹ️ Acerca de</button>
       </div>
     </div>
+    <nav class="view-tabs" role="tablist" aria-label="Pantalla">
+      <button role="tab" data-view="board" aria-selected="true">🎛️ Botonera</button>
+      <button role="tab" data-view="show" aria-selected="false">🎭 Modo Función</button>
+    </nav>
   </header>
 
   <div class="install-banner" id="install-banner" hidden>
@@ -46,9 +55,9 @@
   </div>
 
   <main>
-    <div class="board" id="board" aria-live="polite"></div>
+    <div class="board board-only" id="board" aria-live="polite"></div>
 
-    <section class="empty" id="empty" hidden>
+    <section class="empty board-only" id="empty" hidden>
       <div class="empty-emoji" aria-hidden="true">🎛️</div>
       <h2>Armá tu botonera</h2>
       <p>Agregá audios de tu celu, grabá con el micrófono, o pegá un link de YouTube o Spotify.</p>
@@ -58,11 +67,55 @@
         <li><strong>En la compu:</strong> arrastrá archivos acá o pegá (Ctrl+V) un link.</li>
       </ul>
     </section>
+    <section class="show-view show-only" id="show-view" aria-label="Modo Función">
+      <div class="show-bar">
+        <label class="show-pick">🎭
+          <select id="show-select" aria-label="Función"></select>
+        </label>
+        <button class="icon-btn small" id="show-new" title="Nueva función" aria-label="Nueva función">＋</button>
+        <button class="icon-btn small" id="show-edit-toggle" aria-pressed="false" title="Editar la lista">✏️</button>
+      </div>
+
+      <div class="show-layout">
+        <aside class="show-controls">
+          <div class="standby" id="standby">
+            <small>EN ESPERA</small>
+            <div class="standby-name" id="standby-name">—</div>
+            <div class="standby-meta" id="standby-meta"></div>
+          </div>
+          <button class="go-btn" id="go-btn" aria-keyshortcuts="Space">GO</button>
+          <div class="transport">
+            <button class="secondary" id="prev-btn" aria-keyshortcuts="ArrowUp">⏮ Anterior</button>
+            <button class="secondary" id="next-btn" aria-keyshortcuts="ArrowDown">Siguiente ⏭</button>
+            <button class="fade-btn" id="fade-all-btn" aria-keyshortcuts="F">FADE ALL</button>
+            <button class="stop-btn" id="stop-show-btn" aria-keyshortcuts="Escape">STOP ALL</button>
+          </div>
+          <div class="running" id="running" aria-live="off"></div>
+          <p class="hint keys">Teclado: <kbd>Espacio</kbd> GO · <kbd>Esc</kbd> Stop all · <kbd>F</kbd> Fade all · <kbd>↑</kbd><kbd>↓</kbd> elegir cue</p>
+        </aside>
+
+        <div class="cue-area">
+          <div class="cue-tools">
+            <button class="secondary" id="add-cue-files">＋ Audios</button>
+            <button class="secondary" id="add-cue-board">＋ Desde la botonera</button>
+            <button class="secondary" id="add-cue-stop">＋ Blackout</button>
+          </div>
+          <div class="cue-head" aria-hidden="true">
+            <span>#</span><span>Descripción</span><span>Duración</span><span>Vol</span><span>Loop</span><span>Sigue</span>
+          </div>
+          <ol class="cue-list" id="cue-list"></ol>
+          <div class="show-empty" id="show-empty" hidden>
+            <p><strong>La lista está vacía.</strong></p>
+            <p>Activá ✏️ y agregá los audios de la obra en orden. Podés elegir varios archivos a la vez o arrastrarlos acá.</p>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="credits">Desarrollada por <strong>Marian Morelli</strong></footer>
 
-  <button class="fab" id="add-btn" data-action="add" aria-label="Agregar sonido">＋ <span>Agregar</span></button>
+  <button class="fab board-only" id="add-btn" data-action="add" aria-label="Agregar sonido">＋ <span>Agregar</span></button>
 
   <section class="dock" id="dock" hidden aria-label="Reproductor">
     <header class="dock-head">
@@ -206,6 +259,90 @@
     </div>
   </dialog>
 
+  <!-- Editar cue -->
+  <dialog class="sheet" id="cue-dialog">
+    <form id="cue-form">
+      <header class="sheet-head">
+        <h2 id="cue-title">Editar cue</h2>
+        <button type="button" class="icon-btn small" data-close aria-label="Cerrar">✕</button>
+      </header>
+      <p class="source-line" id="cue-source"></p>
+
+      <label class="field">Descripción
+        <input name="name" required maxlength="60" autocomplete="off">
+      </label>
+
+      <div class="audio-only">
+        <div class="field">Volumen (respecto del original)
+          <div class="db-row">
+            <button type="button" class="secondary" data-db="-3">−3</button>
+            <button type="button" class="secondary" data-db="-1">−1</button>
+            <output id="db-out">0 dB</output>
+            <button type="button" class="secondary" data-db="1">+1</button>
+            <button type="button" class="secondary" data-db="3">+3</button>
+          </div>
+          <input name="db" type="range" min="-60" max="12" step="0.5" value="0" aria-label="Decibeles">
+          <p class="hint">Más de 0 dB sube el volumen por encima del original (cuidado con la saturación). −60 dB = silencio.</p>
+        </div>
+        <div class="row two">
+          <label class="field">Fundido de entrada (seg)
+            <input name="fadeIn" inputmode="decimal" placeholder="0" autocomplete="off">
+          </label>
+          <label class="field">Fundido de salida (seg)
+            <input name="fadeOut" inputmode="decimal" placeholder="0" autocomplete="off">
+          </label>
+        </div>
+        <div class="row two">
+          <label class="field">Desde (seg o m:ss)
+            <input name="start" inputmode="decimal" placeholder="0:00" autocomplete="off">
+          </label>
+          <label class="field">Hasta
+            <input name="end" inputmode="decimal" placeholder="hasta el final" autocomplete="off">
+          </label>
+        </div>
+        <label class="check"><input type="checkbox" name="loop"> 🔁 Loop: se repite hasta un blackout, STOP o FADE</label>
+      </div>
+
+      <div class="stop-only">
+        <p class="hint">⏹ <strong>Blackout sonoro:</strong> al darle GO detiene todo lo que esté sonando.</p>
+        <label class="field">Fundido hasta el silencio (seg, 0 = corte seco)
+          <input name="fade" inputmode="decimal" placeholder="0" autocomplete="off">
+        </label>
+      </div>
+
+      <label class="field">Después de este cue…
+        <select name="continue">
+          <option value="wait">⏸ Espera el próximo GO</option>
+          <option value="follow">↳ Al terminar, entra el siguiente (continuado)</option>
+          <option value="auto">⇉ El siguiente entra junto con este</option>
+        </select>
+      </label>
+      <p class="hint" id="loop-follow-hint" hidden>⚠️ Un cue en loop no termina solo: el siguiente va a entrar recién con un GO.</p>
+
+      <div class="row edit-cue-actions">
+        <button type="button" class="secondary" id="cue-preview">▶ Probar</button>
+        <button type="button" class="secondary" data-cue-move="-1">↑ Subir</button>
+        <button type="button" class="secondary" data-cue-move="1">↓ Bajar</button>
+        <button type="button" class="secondary" id="cue-duplicate">Duplicar</button>
+        <button type="button" class="danger" id="cue-delete">Borrar</button>
+      </div>
+      <button type="submit" class="primary big">Guardar</button>
+    </form>
+  </dialog>
+
+  <!-- Elegir sonidos de la botonera -->
+  <dialog class="sheet" id="pick-dialog">
+    <form id="pick-form">
+      <header class="sheet-head">
+        <h2>Agregar desde la botonera</h2>
+        <button type="button" class="icon-btn small" data-close aria-label="Cerrar">✕</button>
+      </header>
+      <p class="hint">Solo audios guardados en el dispositivo (los de YouTube y Spotify no sirven para una función porque dependen de internet).</p>
+      <div class="pick-list" id="pick-list"></div>
+      <button type="submit" class="primary big">Agregar a la lista</button>
+    </form>
+  </dialog>
+
   <!-- Instalar -->
   <dialog class="sheet" id="install-dialog">
     <header class="sheet-head">
@@ -254,6 +391,8 @@
   </dialog>
 
   <input type="file" id="file-input" accept="audio/*,video/*,.opus,.ogg,.oga,.m4a,.amr,.aac,.mp3,.wav,.webm,.flac,.3gp,.caf" multiple hidden>
+  <input type="file" id="cue-file-input" accept="audio/*,video/*,.opus,.ogg,.oga,.m4a,.amr,.aac,.mp3,.wav,.webm,.flac,.3gp,.caf,.aif,.aiff" multiple hidden>
+  <input type="file" id="show-import-input" accept=".json,application/json" hidden>
   <input type="file" id="import-input" accept=".json,application/json" hidden>
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 </body>

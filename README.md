@@ -14,6 +14,23 @@ Desarrollada por **Marian Morelli**.
 Es una **PWA** (app web instalable): se instala en Android, iPhone y la compu, funciona sin internet
 y guarda todo **en el dispositivo** (IndexedDB). No necesita servidor ni cuentas.
 
+## 🎭 Modo Función (para obras de teatro)
+
+Una segunda pantalla, tipo Multiplay/QLab, para pasar el sonido de una función con un solo botón **GO**:
+
+- **Lista de cues** por obra (se pueden tener varias funciones guardadas). Se cargan varios audios de una
+  vez (quedan ordenados por nombre: `01 …`, `02 …`) o se traen desde la botonera.
+- **Volumen en dB** por cue, relativo al original: se puede **subir** (hasta +12 dB) o bajar (−60 dB = silencio).
+- **Continuación** por cue: *espera el próximo GO*, *al terminar entra el siguiente* (continuado) o
+  *el siguiente entra junto con este*.
+- **Blackout sonoro**: cue que detiene todo lo que suena, con corte seco o fundido de N segundos.
+- **Loop** por cue, **fundidos** de entrada y salida, **recorte** desde/hasta.
+- **GO** (barra espaciadora), **STOP ALL** (Esc), **FADE ALL** (F, duración configurable), ↑/↓ para elegir el cue en espera.
+  Se ve qué está sonando con tiempo restante y se puede parar o fundir cada uno.
+- Protección contra doble GO, pantalla siempre encendida durante la función y edición bloqueada
+  (✏️) para no cambiar nada por error.
+- **Exportar/importar** la función entera (con los audios) para llevarla a la compu del teatro.
+
 ## Agregar audios es fácil
 
 | Desde | Cómo |
@@ -48,6 +65,9 @@ src/app.js       interfaz y flujos para agregar/editar
 src/sources.js   reconoce links de YouTube/Spotify, tiempos ("1:23", "1m23s") y archivos de WhatsApp
 src/player.js    reproduce audio local (varios a la vez) y YouTube/Spotify con sus reproductores oficiales
 src/recorder.js  grabación con el micrófono
+src/show.js      Modo Función (lista de cues, GO, edición)
+src/show-engine.js  motor de audio de la función (Web Audio: dB, fundidos, loop, blackout)
+src/cues.js      lógica pura de cues (dB, encadenamiento), con tests
 src/db.js        guardado local (IndexedDB)
 sw.js            offline + recibe lo que se comparte desde otras apps (Web Share Target)
 manifest.webmanifest  instalación y registro en el menú "Compartir"

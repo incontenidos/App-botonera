@@ -1,6 +1,7 @@
 import { getAllSounds, putSounds, deleteSound, takeInbox } from './db.js';
 import { Player } from './player.js';
 import { canRecord, startRecording } from './recorder.js';
+import { initShow } from './show.js';
 import {
   parseMediaUrl, parseTime, formatTime, isAudioFile, guessMime, isWhatsAppFile, friendlyName, extractFirstUrl,
 } from './sources.js';
@@ -68,6 +69,25 @@ const player = new Player({
   onError: (msg) => toast(msg),
 });
 player.overlap = settings.overlap;
+
+// ---------- Pantallas: Botonera / Modo Función ----------
+
+let show = null;
+const currentView = () => document.body.dataset.view || 'board';
+
+function setView(view) {
+  if (view !== 'show') view = 'board';
+  document.body.dataset.view = view;
+  for (const tab of $$('.view-tabs [data-view]')) tab.setAttribute('aria-selected', String(tab.dataset.view === view));
+  try { localStorage.setItem('botonera.view', view); } catch { /* modo privado */ }
+  closeMenu();
+  if (view === 'show') {
+    if (state.editMode) setEditMode(false);
+    show.enter();
+  } else {
+    show.leave();
+  }
+}
 
 // ---------- Render ----------
 
@@ -663,12 +683,14 @@ function bindEvents() {
     e.preventDefault();
     dragDepth = 0;
     els.dropOverlay.hidden = true;
-    handleIncoming({ files: [...e.dataTransfer.files] });
+    const files = [...e.dataTransfer.files];
+    if (currentView() === 'show') show.addFiles(files);
+    else handleIncoming({ files });
   });
 
   // Pegar (Ctrl+V) un audio o un link en cualquier lado
   document.addEventListener('paste', (e) => {
-    if (e.target.closest?.('input, textarea')) return;
+    if (e.target.closest?.('input, textarea') || currentView() === 'show') return;
     const files = [...(e.clipboardData?.files || [])];
     const text = e.clipboardData?.getData('text') || '';
     if (files.length || text) {
@@ -679,7 +701,7 @@ function bindEvents() {
 
   // Teclado: 1..9, 0 disparan los primeros sonidos; Esc para todo.
   document.addEventListener('keydown', (e) => {
-    if ($$('dialog').some((d) => d.open) || e.ctrlKey || e.metaKey || e.altKey || e.target.closest?.('input, textarea')) return;
+    if (currentView() === 'show' || $$('dialog').some((d) => d.open) || e.ctrlKey || e.metaKey || e.altKey || e.target.closest?.('input, textarea')) return;
     if (e.key === 'Escape') return player.stopAll();
     if (/^[0-9]$/.test(e.key)) {
       const sound = state.sounds[(Number(e.key) + 9) % 10];
@@ -760,6 +782,11 @@ async function checkInbox() {
 async function init() {
   bindEvents();
   updateInstallUI();
+  show = initShow({ toast, getSounds: () => state.sounds });
+  for (const tab of $$('.view-tabs [data-view]')) tab.addEventListener('click', () => setView(tab.dataset.view));
+  let savedView = 'board';
+  try { savedView = localStorage.getItem('botonera.view') || 'board'; } catch { /* modo privado */ }
+  setView(location.hash === '#funcion' ? 'show' : savedView);
   try {
     state.sounds = await getAllSounds();
   } catch (e) {

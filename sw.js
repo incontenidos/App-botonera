@@ -1,8 +1,9 @@
 // Service worker: funciona sin conexión y recibe audios/links desde "Compartir" (Web Share Target).
-const CACHE = 'botonera-v2';
+const CACHE = 'botonera-v3';
 const SHELL = [
   './', './index.html', './styles.css', './manifest.webmanifest',
   './src/app.js', './src/db.js', './src/player.js', './src/recorder.js', './src/sources.js',
+  './src/cues.js', './src/show-engine.js', './src/show.js',
   './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png',
 ];
 
@@ -46,11 +47,12 @@ self.addEventListener('fetch', (event) => {
 // Misma base que src/db.js (mantener DB_NAME, versión y stores sincronizados).
 function openDB() {
   return new Promise((resolve, reject) => {
-    const req = indexedDB.open('botonera-db', 1);
+    const req = indexedDB.open('botonera-db', 2);
     req.onupgradeneeded = () => {
       const db = req.result;
       if (!db.objectStoreNames.contains('sounds')) db.createObjectStore('sounds', { keyPath: 'id' });
       if (!db.objectStoreNames.contains('inbox')) db.createObjectStore('inbox', { keyPath: 'id', autoIncrement: true });
+      if (!db.objectStoreNames.contains('shows')) db.createObjectStore('shows', { keyPath: 'id' });
     };
     req.onsuccess = () => resolve(req.result);
     req.onerror = () => reject(req.error);
