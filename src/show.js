@@ -1,11 +1,11 @@
 // Modo Función: lista de cues para pasar el sonido de una obra con un botón GO.
 
-import { getAllShows, putShow, deleteShow } from './db.js?v=1.3';
-import { ShowEngine } from './show-engine.js?v=1.3';
+import { getAllShows, putShow, deleteShow } from './db.js?v=1.4';
+import { ShowEngine } from './show-engine.js?v=1.4';
 import {
   CONTINUE, clampDb, formatDb, goFrom, followAfter, effectiveDuration, clock,
-} from './cues.js?v=1.3';
-import { parseTime, formatTime, isAudioFile, guessMime } from './sources.js?v=1.3';
+} from './cues.js?v=1.4';
+import { parseTime, formatTime, isAudioFile, guessMime } from './sources.js?v=1.4';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];

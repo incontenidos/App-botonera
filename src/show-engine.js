@@ -1,7 +1,7 @@
 // Motor de audio del Modo Función: cada cue suena por Web Audio con su ganancia en dB
 // (permite subir por encima del volumen original), fundidos de entrada/salida, recorte y loop.
 
-import { dbToGain } from './cues.js?v=1.3';
+import { dbToGain } from './cues.js?v=1.4';
 
 const TICK_MS = 40;
 

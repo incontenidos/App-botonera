@@ -1,6 +1,6 @@
 // Service worker: funciona sin conexión y recibe audios/links desde "Compartir" (Web Share Target).
 // Cambiar este número en cada versión publicada: así el navegador instala el service worker nuevo.
-const VERSION = '1.3';
+const VERSION = '1.4';
 const CACHE = `botonera-${VERSION}`;
 const SHELL = [
   './', './index.html', './styles.css', './manifest.webmanifest',

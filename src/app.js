@@ -1,10 +1,10 @@
-import { getAllSounds, putSounds, deleteSound, takeInbox } from './db.js?v=1.3';
-import { Player } from './player.js?v=1.3';
-import { canRecord, startRecording } from './recorder.js?v=1.3';
-import { initShow } from './show.js?v=1.3';
+import { getAllSounds, putSounds, deleteSound, takeInbox, onBlocked } from './db.js?v=1.4';
+import { Player } from './player.js?v=1.4';
+import { canRecord, startRecording } from './recorder.js?v=1.4';
+import { initShow } from './show.js?v=1.4';
 import {
   parseMediaUrl, parseTime, formatTime, isAudioFile, guessMime, isWhatsAppFile, friendlyName, extractFirstUrl,
-} from './sources.js?v=1.3';
+} from './sources.js?v=1.4';
 
 const COLORS = ['#ff5d73', '#ff9f1c', '#ffd23f', '#3ddc97', '#2ec4b6', '#4cc9f0', '#4361ee', '#9b5de5', '#f15bb5', '#8d99ae'];
 const EMOJIS = ['🔊', '😂', '👏', '🥁', '📯', '💥', '🎺', '😱', '🐐', '🤡', '💬', '🎵', '🔥', '💀', '🙌', '❌'];
@@ -137,12 +137,18 @@ function setEditMode(on) {
 // ---------- Toast ----------
 
 let toastTimer;
-function toast(msg) {
+function toast(msg, ms = 3800) {
+  // Si hay una ventana abierta, el aviso va adentro: si no, quedaría tapado detrás de ella.
+  const open = $$('dialog[open]').pop();
+  (open || document.body).append(els.toast);
   els.toast.textContent = msg;
   els.toast.hidden = false;
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { els.toast.hidden = true; }, 3800);
+  toastTimer = setTimeout(() => { els.toast.hidden = true; }, ms);
 }
+
+const BLOCKED_MSG = '⚠️ Hay otra ventana o pestaña de la Botonera abierta con una versión anterior. Cerrala (o cerrá la app instalada y volvé a abrirla) para poder guardar.';
+onBlocked(() => toast(BLOCKED_MSG, 12000));
 
 // ---------- Diálogo de agregar / editar ----------
 
@@ -234,6 +240,7 @@ function openDetails(draft, isNew) {
   if (els.help.open) els.help.close();
   state.draft = draft;
   state.isNew = isNew;
+  setFormError(els.details, '');
   state.nameTouched = !isNew;
   const f = els.details.elements;
   f.name.value = draft.name || '';
@@ -328,27 +335,66 @@ async function tryDownload(draft) {
   } catch { /* CORS o sin conexión */ }
 }
 
+function setFormError(form, msg) {
+  let el = $('.form-error', form);
+  if (!el) {
+    el = document.createElement('p');
+    el.className = 'form-error';
+    el.setAttribute('role', 'alert');
+    $('button[type="submit"]', form).before(el);
+  }
+  el.textContent = msg || '';
+  el.hidden = !msg;
+}
+
+function saveErrorMessage(e) {
+  if (e?.name === 'QuotaExceededError') return 'No hay espacio suficiente en el dispositivo para guardar este audio.';
+  return `No se pudo guardar el sonido${e?.message ? ` (${e.message})` : ''}. Probá cerrar y volver a abrir la app.`;
+}
+
+let saving = false;
 async function saveDraft() {
+  if (saving) return;
+  const form = els.details;
+  const btn = $('button[type="submit"]', form);
+  saving = true;
+  btn.disabled = true;
+  btn.textContent = 'Guardando…';
+  setFormError(form, '');
+  const slow = setTimeout(() => setFormError(form, `Está tardando… ${BLOCKED_MSG}`), 2500);
+  try {
+    await doSave();
+  } catch (e) {
+    console.error(e);
+    setFormError(form, saveErrorMessage(e));
+  } finally {
+    clearTimeout(slow);
+    saving = false;
+    btn.disabled = false;
+    btn.textContent = 'Guardar';
+  }
+}
+
+async function doSave() {
   readForm();
   const draft = state.draft;
   player.stop(draft.id);
   if (draft.kind === 'url' && state.isNew) await tryDownload(draft);
   if (state.isNew) {
     draft.order = state.sounds.length ? Math.max(...state.sounds.map((s) => s.order)) + 1 : 0;
+  } else {
+    draft.order = state.sounds.find((s) => s.id === draft.id)?.order ?? draft.order; // pudo cambiar con "Mover"
+  }
+  await putSounds([draft]);
+  // Recién cuando quedó guardado lo sumamos a la pantalla.
+  if (state.isNew) {
     state.sounds.push(draft);
   } else {
     const i = state.sounds.findIndex((s) => s.id === draft.id);
-    draft.order = state.sounds[i].order; // pudo cambiar con "Mover" mientras se editaba
     state.sounds[i] = draft;
   }
-  try {
-    await putSounds([draft]);
-  } catch (e) {
-    toast('No se pudo guardar (¿falta espacio en el dispositivo?)');
-    console.error(e);
-    return;
-  }
   navigator.storage?.persist?.().catch(() => {});
+  setFormError(els.details, '');
   const isNew = state.isNew;
   state.draft = null;
   closeSoundDialog();
