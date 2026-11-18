@@ -1,0 +1,50 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; font-family: "Archivo Black", sans-serif; color: #f5f3ff; }
+    #hook-title { position: absolute; left: 120px; width: 780px; top: 290px; text-align: center; }
+    #hook-l1, #hook-l2 { display: block; font-size: 118px; line-height: 1.02; letter-spacing: -0.03em; }
+    #hook-l2 { color: var(--accent); }
+    #hook-grid {
+      position: absolute; left: 120px; top: 600px; width: 760px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+    }
+    .hook-pad {
+      height: 196px; border-radius: 40px; background: var(--c);
+      box-shadow: inset 0 -14px 0 rgba(0,0,0,.22);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+      font-family: "Inter", sans-serif; font-weight: 900; font-size: 38px; color: #1a1a1a;
+    }
+    .hook-pad .e { font-size: 72px; line-height: 1; }
+    #hook-ring {
+      position: absolute; left: 120px; top: 600px; width: 368px; height: 196px; border-radius: 40px;
+      border: 10px solid #fff; opacity: 0;
+    }
+  </style>
+  <div id="root" data-composition-id="hook" data-width="1080" data-height="1920">
+    <h1 id="hook-title">
+      <span id="hook-l1">Tu botonera</span>
+      <span id="hook-l2">de sonidos</span>
+    </h1>
+    <div id="hook-grid">
+      <div class="hook-pad" style="--c:#ff5d73"><span class="e">👏</span>Aplausos</div>
+      <div class="hook-pad" style="--c:#ff9f1c"><span class="e">😂</span>Risas</div>
+      <div class="hook-pad" style="--c:#ffd23f"><span class="e">🥁</span>Redoble</div>
+      <div class="hook-pad" style="--c:#3ddc97"><span class="e">💬</span>Audio de mamá</div>
+      <div class="hook-pad" style="--c:#4cc9f0"><span class="e">😱</span>Suspenso</div>
+      <div class="hook-pad" style="--c:#9b5de5"><span class="e">🎉</span>Tadá</div>
+    </div>
+    <div id="hook-ring"></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#hook-l1", { y: 30, scale: 0.96 }, { y: 0, scale: 1, duration: 0.5, ease: "power3.out" }, 0);
+    tl.fromTo("#hook-l2", { y: 40, opacity: 0.35 }, { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0.08);
+    tl.fromTo(".hook-pad", { scale: 0.4, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 0.42, ease: "back.out(2.2)", stagger: 0.15 }, 0.45);
+    // Se aprieta el botón de "Aplausos"
+    tl.fromTo(".hook-pad:first-child", { scale: 1 }, { scale: 0.9, duration: 0.08, ease: "power2.in" }, 2.25);
+    tl.to(".hook-pad:first-child", { scale: 1, duration: 0.35, ease: "back.out(3)" }, 2.33);
+    tl.fromTo("#hook-ring", { opacity: 0.9, scale: 1 }, { opacity: 0, scale: 1.25, duration: 0.6, ease: "power2.out", immediateRender: false }, 2.3);
+    window.__timelines["hook"] = tl;
+  </script>
+</template>

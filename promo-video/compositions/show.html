@@ -1,0 +1,50 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; font-family: "Archivo Black", sans-serif; color: #f5f3ff; }
+    #show-title { position: absolute; left: 120px; width: 780px; top: 300px; text-align: center; font-size: 86px; letter-spacing: -0.02em; }
+    #show-sub {
+      position: absolute; left: 120px; width: 780px; top: 420px; text-align: center;
+      font-family: "Inter", sans-serif; font-weight: 700; font-size: 42px; color: #a9a3c4;
+    }
+    #show-sub b { color: var(--accent); font-weight: 900; }
+    #show-phone {
+      position: absolute; left: 290px; top: 520px; width: 440px; height: 790px;
+      border-radius: 56px; border: 12px solid #2a2640; overflow: hidden; background: #000;
+      box-shadow: 0 40px 90px rgba(0,0,0,.55);
+    }
+    #show-shot { width: 100%; height: auto; display: block; }
+    /* El botón GO de la captura: 4%–96% de ancho, 33.7%–49.7% de alto de la imagen */
+    #show-tap {
+      position: absolute; left: 17px; top: 304px; width: 382px; height: 144px;
+      border-radius: 34px; border: 8px solid #fff; opacity: 0;
+    }
+    #show-finger {
+      position: absolute; left: 455px; top: 853px; width: 110px; height: 110px; border-radius: 50%;
+      background: rgba(255,255,255,.55); border: 6px solid #fff; opacity: 0;
+    }
+  </style>
+  <div id="root" data-composition-id="show" data-width="1080" data-height="1920">
+    <h2 id="show-title">🎭 Modo Función</h2>
+    <p id="show-sub">Toda la obra con <b>un solo botón</b></p>
+    <div id="show-phone">
+      <img id="show-shot" src="assets/show.png" alt="Modo Función de Botonera" />
+      <div id="show-tap"></div>
+    </div>
+    <div id="show-finger"></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#show-title", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 0);
+    tl.fromTo("#show-sub", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 0.2);
+    tl.fromTo("#show-phone", { y: 760 }, { y: 0, duration: 0.7, ease: "power4.out" }, 0.1);
+    // El dedo entra y aprieta GO a los 2.0 s
+    tl.fromTo("#show-finger", { opacity: 0, x: 140, y: 220 }, { opacity: 1, x: 0, y: 0, duration: 0.5, ease: "power3.out" }, 1.3);
+    tl.to("#show-finger", { scale: 0.8, duration: 0.1, ease: "power2.in" }, 1.9);
+    tl.to("#show-finger", { scale: 1, opacity: 0, duration: 0.4, ease: "power2.out" }, 2.05);
+    tl.fromTo("#show-tap", { opacity: 1, scale: 1 }, { opacity: 0, scale: 1.18, duration: 0.6, ease: "power2.out", immediateRender: false }, 2.0);
+    tl.fromTo("#show-shot", { scale: 1 }, { scale: 0.985, duration: 0.08, transformOrigin: "50% 20%" }, 1.95);
+    tl.to("#show-shot", { scale: 1, duration: 0.3, ease: "back.out(3)" }, 2.03);
+    tl.to("#show-phone", { y: -12, duration: 1.6, ease: "sine.inOut" }, 2.4);
+    window.__timelines["show"] = tl;
+  </script>
+</template>

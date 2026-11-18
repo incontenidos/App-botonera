@@ -1,0 +1,33 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; font-family: "Archivo Black", sans-serif; color: #f5f3ff; text-align: center; }
+    #outro-icon { position: absolute; left: 365px; top: 320px; width: 290px; height: 290px; border-radius: 80px; }
+    #outro-name { position: absolute; left: 120px; width: 780px; top: 640px; font-size: 128px; letter-spacing: -0.03em; }
+    #outro-tags { position: absolute; left: 120px; width: 780px; top: 830px; font-family: "Inter", sans-serif; font-weight: 900; font-size: 52px; }
+    .outro-tag { display: block; line-height: 1.45; }
+    #outro-cta {
+      position: absolute; left: 230px; top: 1110px; width: 560px; padding: 22px 0;
+      border-radius: 999px; background: var(--accent); color: #1a1a1a;
+      font-family: "Inter", sans-serif; font-weight: 900; font-size: 46px;
+    }
+  </style>
+  <div id="root" data-composition-id="outro" data-width="1080" data-height="1920">
+    <img id="outro-icon" src="assets/icon.png" alt="Ícono de Botonera" />
+    <h2 id="outro-name">Botonera</h2>
+    <div id="outro-tags">
+      <span class="outro-tag" style="color:#3ddc97">Gratis</span>
+      <span class="outro-tag" style="color:#4cc9f0">Funciona sin internet</span>
+      <span class="outro-tag" style="color:#ff9f1c">Se instala en tu celu</span>
+    </div>
+    <div id="outro-cta">Instalala como app 📲</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#outro-icon", { scale: 0.3, rotation: -12, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: 0.55, ease: "back.out(2)" }, 0.1);
+    tl.fromTo("#outro-name", { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0.35);
+    tl.fromTo(".outro-tag", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out", stagger: 0.15 }, 0.6);
+    tl.fromTo("#outro-cta", { scale: 0.7, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: "back.out(2.5)" }, 1.1);
+    tl.to("#outro-icon", { y: -10, duration: 1.0, ease: "sine.inOut" }, 1.8);
+    window.__timelines["outro"] = tl;
+  </script>
+</template>
