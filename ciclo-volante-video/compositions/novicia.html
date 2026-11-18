@@ -1,0 +1,82 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; font-family: "Archivo Black", sans-serif; color: var(--crema); }
+    /* Vitral: rosetón de colores detrás del título */
+    #n-vitral { position: absolute; left: 190px; top: 210px; width: 700px; height: 700px; opacity: 0.32; }
+    /* Campana que se balancea arriba */
+    #n-campana { position: absolute; left: 470px; top: 250px; width: 140px; height: 160px; }
+    #n-titulo { position: absolute; left: 120px; width: 780px; top: 430px; text-align: center; font-size: 104px; line-height: 1.0; letter-spacing: -0.02em; }
+    #n-titulo .n-acento { color: var(--mostaza); display: block; }
+    #n-bajada { position: absolute; left: 120px; width: 780px; top: 680px; text-align: center; font-family: "Inter", sans-serif; font-weight: 900; font-size: 46px; line-height: 1.15; }
+    #n-personajes { position: absolute; left: 120px; width: 780px; top: 840px; display: flex; justify-content: space-between; }
+    .n-pj { width: 240px; text-align: center; }
+    /* Velo de novicia sobre cada foto */
+    .n-foto {
+      width: 200px; height: 200px; margin: 0 auto 14px; border-radius: 50%;
+      border: 5px dashed rgba(251,239,213,.75);
+      display: flex; align-items: center; justify-content: center;
+      font-family: "Inter", sans-serif; font-weight: 900; font-size: 30px; padding-top: 50px; color: rgba(251,239,213,.85);
+      position: relative;
+    }
+    .n-velo { position: absolute; left: -16px; right: -16px; top: -22px; height: 90px;
+      border-radius: 120px 120px 30px 30px; background: #111; border-bottom: 10px solid #fff; }
+    .n-nombre { font-size: 50px; color: var(--crema); }
+    #n-pj1 .n-nombre { color: var(--mostaza); }
+    #n-credito {
+      position: absolute; left: 180px; width: 660px; top: 1170px; padding: 20px 0; border-radius: 999px;
+      background: var(--crema); color: var(--fondo); text-align: center;
+      font-family: "Inter", sans-serif; font-weight: 900; font-size: 42px;
+    }
+  </style>
+  <div id="root" data-composition-id="novicia" data-width="1080" data-height="1920">
+    <svg id="n-vitral" viewBox="-100 -100 200 200">
+      <g id="n-vitral-g">
+        <path d="M0 0 L0 -96 A96 96 0 0 1 67.9 -67.9 Z" fill="#d7263d" />
+        <path d="M0 0 L67.9 -67.9 A96 96 0 0 1 96 0 Z" fill="#2b7bb9" />
+        <path d="M0 0 L96 0 A96 96 0 0 1 67.9 67.9 Z" fill="#f4b41a" />
+        <path d="M0 0 L67.9 67.9 A96 96 0 0 1 0 96 Z" fill="#3a9d5d" />
+        <path d="M0 0 L0 96 A96 96 0 0 1 -67.9 67.9 Z" fill="#d7263d" />
+        <path d="M0 0 L-67.9 67.9 A96 96 0 0 1 -96 0 Z" fill="#2b7bb9" />
+        <path d="M0 0 L-96 0 A96 96 0 0 1 -67.9 -67.9 Z" fill="#f4b41a" />
+        <path d="M0 0 L-67.9 -67.9 A96 96 0 0 1 0 -96 Z" fill="#3a9d5d" />
+        <g stroke="#1b0d16" stroke-width="4" fill="none">
+          <circle r="96" /><circle r="40" />
+          <line x1="0" y1="-96" x2="0" y2="96" /><line x1="-96" y1="0" x2="96" y2="0" />
+          <line x1="-67.9" y1="-67.9" x2="67.9" y2="67.9" /><line x1="-67.9" y1="67.9" x2="67.9" y2="-67.9" />
+        </g>
+      </g>
+    </svg>
+    <svg id="n-campana" viewBox="0 0 140 160">
+      <g id="n-campana-g">
+        <rect x="62" y="0" width="16" height="18" rx="4" fill="#f4b41a" />
+        <path d="M70 14 C38 14 30 50 28 90 C26 112 14 120 8 128 L132 128 C126 120 114 112 112 90 C110 50 102 14 70 14 Z" fill="#f4b41a" />
+        <circle id="n-badajo" cx="70" cy="140" r="14" fill="#f4b41a" />
+      </g>
+    </svg>
+    <h2 id="n-titulo">La novicia <span class="n-acento">equivocada</span></h2>
+    <p id="n-bajada">Una comedia de enredos en un convento</p>
+    <!-- PLACEHOLDER: fotos de los personajes, reemplazar los círculos por las fotos del Instagram -->
+    <div id="n-personajes" data-layout-allow-overlap>
+      <div class="n-pj" id="n-pj1"><div class="n-foto"><div class="n-velo"></div>FOTO</div><div class="n-nombre">Renata</div></div>
+      <div class="n-pj" id="n-pj2"><div class="n-foto"><div class="n-velo"></div>FOTO</div><div class="n-nombre">Mora</div></div>
+      <div class="n-pj" id="n-pj3"><div class="n-foto">FOTO</div><div class="n-nombre">Dante</div></div>
+    </div>
+    <div id="n-credito">Dirección: Marian Morelli</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Campanada al entrar (el sonido está en index.html a los 6.6 s)
+    tl.fromTo("#n-campana-g", { rotation: -28 }, { rotation: 0, duration: 1.6, ease: "elastic.out(1.4, 0.25)", svgOrigin: "70 4" }, 0);
+    tl.fromTo("#n-campana", { y: -180, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power3.out" }, 0);
+    tl.fromTo("#n-vitral", { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 0.32, duration: 0.6, ease: "back.out(1.8)" }, 0);
+    tl.fromTo("#n-vitral-g", { rotation: 0 }, { rotation: 40, duration: 4.8, ease: "none", svgOrigin: "0 0" }, 0);
+    tl.fromTo("#n-titulo", { y: -160, scale: 0.5, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.5, ease: "back.out(2.6)" }, 0.15);
+    tl.fromTo("#n-bajada", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "back.out(2)" }, 0.55);
+    ["#n-pj1", "#n-pj2", "#n-pj3"].forEach((id, i) => {
+      tl.fromTo(id, { y: 260, scale: 0.5, opacity: 0, rotation: i === 1 ? 0 : (i ? 8 : -8) },
+        { y: 0, scale: 1, opacity: 1, rotation: 0, duration: 0.5, ease: "back.out(2.4)" }, 1.0 + i * 0.25);
+    });
+    tl.fromTo("#n-credito", { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: "back.out(2.6)" }, 2.0);
+    window.__timelines["novicia"] = tl;
+  </script>
+</template>

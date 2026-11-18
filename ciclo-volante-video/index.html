@@ -1,0 +1,72 @@
+<!doctype html>
+<html
+  lang="es"
+  data-composition-variables='[
+    {"id":"rojo","type":"color","label":"Color principal (PLACEHOLDER: tomar del Instagram del ciclo)","default":"#d7263d"},
+    {"id":"crema","type":"color","label":"Color claro (PLACEHOLDER)","default":"#fbefd5"},
+    {"id":"mostaza","type":"color","label":"Color de acento (PLACEHOLDER)","default":"#f4b41a"},
+    {"id":"fondo","type":"color","label":"Fondo (PLACEHOLDER)","default":"#1b0d16"}
+  ]'
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      /* PLACEHOLDER de identidad: reemplazar por los colores del Instagram del ciclo */
+      :root {
+        --rojo: #d7263d;
+        --crema: #fbefd5;
+        --mostaza: #f4b41a;
+        --fondo: #1b0d16;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--fondo); }
+      #root { width: 100%; height: 100%; }
+      #bg {
+        position: absolute; inset: 0;
+        background:
+          radial-gradient(ellipse at 50% 35%, #3a1426 0, transparent 60%),
+          var(--fondo);
+      }
+      /* Telón: dos franjas a los costados, guiño teatral constante */
+      .telon { position: absolute; top: 0; bottom: 0; width: 70px;
+        background: repeating-linear-gradient(90deg, #8e1022 0 18px, #b3152c 18px 36px); }
+      #telon-izq { left: 0; }
+      #telon-der { right: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="15"
+      data-width="1080" data-height="1920">
+      <div id="bg"></div>
+      <div class="telon" id="telon-izq"></div>
+      <div class="telon" id="telon-der"></div>
+
+      <div id="gancho" data-composition-id="gancho" data-composition-src="compositions/gancho.html"
+        data-start="0" data-duration="3" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1920"></div>
+      <div id="ciclo" data-composition-id="ciclo" data-composition-src="compositions/ciclo.html"
+        data-start="3" data-duration="3.6" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1920"></div>
+      <div id="novicia" data-composition-id="novicia" data-composition-src="compositions/novicia.html"
+        data-start="6.6" data-duration="4.8" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1920"></div>
+      <div id="cierre" data-composition-id="cierre" data-composition-src="compositions/cierre.html"
+        data-start="11.4" data-duration="3.6" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1920"></div>
+
+      <!-- Audio original sintetizado con tools/make_audio.py (sin derechos de terceros) -->
+      <audio id="musica" class="clip" data-start="0" data-duration="15" data-track-index="3"
+        data-volume="0.5" src="assets/audio/musica.wav"></audio>
+      <audio id="tictac" class="clip" data-start="0.05" data-duration="2.8" data-track-index="4"
+        data-volume="0.9" src="assets/audio/tictac.wav"></audio>
+      <audio id="campana" class="clip" data-start="6.6" data-duration="3.5" data-track-index="4"
+        data-volume="0.8" src="assets/audio/campana.wav"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,64 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; font-family: "Archivo Black", sans-serif; color: var(--crema); }
+    #g-texto { position: absolute; left: 90px; width: 840px; top: 280px; text-align: center; }
+    .g-l { display: block; white-space: nowrap; font-size: 96px; line-height: 1.02; letter-spacing: -0.02em; }
+    #g-l3 { color: var(--mostaza); font-size: 104px; margin-top: 10px; }
+    #g-reloj { position: absolute; left: 310px; top: 680px; width: 400px; height: 450px; }
+    #g-svg { width: 400px; height: 450px; overflow: visible; }
+    #g-digital {
+      position: absolute; left: 0; right: 0; top: 318px; text-align: center;
+      font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 46px; color: var(--fondo);
+    }
+  </style>
+  <div id="root" data-composition-id="gancho" data-width="1080" data-height="1920">
+    <h1 id="g-texto">
+      <span class="g-l" id="g-l1">¿Cuánto teatro</span>
+      <span class="g-l" id="g-l2">entra en</span>
+      <span class="g-l" id="g-l3">15 minutos?</span>
+    </h1>
+    <div id="g-reloj">
+      <svg id="g-svg" viewBox="0 0 480 540">
+        <!-- Cronómetro: botón, cuerpo, marcas y aguja -->
+        <rect x="205" y="0" width="70" height="44" rx="10" fill="#f4b41a" />
+        <rect x="225" y="36" width="30" height="30" fill="#f4b41a" />
+        <circle cx="240" cy="300" r="232" fill="#d7263d" />
+        <circle cx="240" cy="300" r="200" fill="#fbefd5" />
+        <g id="g-marcas" stroke="#1b0d16" stroke-width="8" stroke-linecap="round">
+          <line x1="240" y1="112" x2="240" y2="142" /><line x1="240" y1="458" x2="240" y2="488" />
+          <line x1="52" y1="300" x2="82" y2="300" /><line x1="398" y1="300" x2="428" y2="300" />
+          <line x1="107" y1="167" x2="125" y2="185" /><line x1="373" y1="167" x2="355" y2="185" />
+          <line x1="107" y1="433" x2="125" y2="415" /><line x1="373" y1="433" x2="355" y2="415" />
+        </g>
+        <g id="g-aguja">
+          <line x1="240" y1="300" x2="240" y2="132" stroke="#d7263d" stroke-width="12" stroke-linecap="round" />
+        </g>
+        <circle cx="240" cy="300" r="18" fill="#1b0d16" />
+      </svg>
+      <div id="g-digital">00:00</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#g-l1", { scale: 1.25 }, { scale: 1, duration: 0.45, ease: "back.out(2.6)" }, 0);
+    tl.fromTo("#g-l2", { y: -160, scale: 0.6, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.45, ease: "back.out(2.6)" }, 0.18);
+    tl.fromTo("#g-l3", { y: -160, scale: 0.4, opacity: 0, rotation: -6 }, { y: 0, scale: 1, opacity: 1, rotation: -3, duration: 0.55, ease: "back.out(3)" }, 0.36);
+    tl.fromTo("#g-reloj", { scale: 0.8, rotation: -12 }, { scale: 1, rotation: 0, duration: 0.5, ease: "back.out(2.2)" }, 0);
+    // La aguja da vueltas cada vez más rápido (igual que el tic-tac)
+    tl.fromTo("#g-aguja", { rotation: 0 }, { rotation: 360 * 7, duration: 2.6, ease: "power2.in", svgOrigin: "240 300" }, 0.05);
+    // El contador digital corre de 00:00 a 15:00
+    const reloj = { s: 0 };
+    tl.fromTo(reloj, { s: 0 }, {
+      s: 900, duration: 2.5, ease: "power2.in",
+      onUpdate: () => {
+        const v = Math.round(reloj.s);
+        const mm = String(Math.floor(v / 60)).padStart(2, "0");
+        const ss = String(v % 60).padStart(2, "0");
+        document.querySelector("#g-digital").textContent = mm + ":" + ss;
+      },
+    }, 0.1);
+    // Sacudón al llegar a 15:00
+    tl.to("#g-reloj", { rotation: 8, duration: 0.06, yoyo: true, repeat: 3, ease: "none" }, 2.6);
+    window.__timelines["gancho"] = tl;
+  </script>
+</template>
