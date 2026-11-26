@@ -1,0 +1,45 @@
+<template>
+  <style>
+    @font-face { font-family: "DM Sans"; font-weight: 300; font-style: italic; src: url("assets/fonts/dm-sans-latin-300-italic.woff2") format("woff2"); }
+    @font-face { font-family: "DM Sans"; font-weight: 400; font-style: normal; src: url("assets/fonts/dm-sans-latin-400-normal.woff2") format("woff2"); }
+    @font-face { font-family: "DM Sans"; font-weight: 700; font-style: normal; src: url("assets/fonts/dm-sans-latin-700-normal.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; background: #000; color: #fff; font-family: "DM Sans", sans-serif; }
+    /* Zona de texto: dentro de la franja segura de Reels (380–1330 px), margen izquierdo de 110 px */
+    .zona { position: absolute; left: 110px; width: 800px; top: 380px; height: 950px;
+      display: flex; flex-direction: column; justify-content: center; }
+    .b { font-weight: 700; }
+    .r { font-weight: 400; }
+    .q { font-weight: 300; font-style: italic; }
+    .gris { color: #888888; }
+    .linea { display: block; }
+    .w { opacity: 0; }
+    .m { display: block; overflow: hidden; padding-bottom: 0.12em; margin-bottom: -0.12em; }
+    .mi { display: block; }
+
+    .s3-p { position: absolute; left: 110px; width: 800px; text-align: center; font-size: 150px; letter-spacing: 0.04em; }
+    #s3-corto { top: 520px; }
+    #s3-breve { top: 1010px; }
+    #s3-neq { position: absolute; left: 440px; top: 760px; width: 140px; height: 180px; }
+  </style>
+  <div id="root" data-composition-id="s03-corto-breve" data-width="1080" data-height="1920">
+    <div class="s3-p b" id="s3-corto">CORTO</div>
+    <svg id="s3-neq" viewBox="0 0 140 180" fill="none" stroke="#ffffff" stroke-width="14" stroke-linecap="square">
+      <line id="s3-l1" x1="10" y1="68" x2="130" y2="68" pathLength="1" stroke-dasharray="1" />
+      <line id="s3-l2" x1="10" y1="112" x2="130" y2="112" pathLength="1" stroke-dasharray="1" />
+      <line id="s3-l3" x1="100" y1="10" x2="40" y2="170" pathLength="1" stroke-dasharray="1" />
+    </svg>
+    <div class="s3-p b" id="s3-breve">BREVE</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Aparición seca (sin fundido) y corte duro, ambos reversibles al buscar en la línea de tiempo
+    const appear = (sel, t) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: 0.001, immediateRender: false }, t);
+    const cut = (sel, t) => tl.fromTo(sel, { opacity: 1 }, { opacity: 0, duration: 0.001, immediateRender: false }, t);
+    appear("#s3-corto", 0);
+    appear("#s3-breve", 0.35);
+    tl.fromTo("#s3-l1", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.22, ease: "power2.inOut" }, 0.7);
+    tl.fromTo("#s3-l2", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.22, ease: "power2.inOut" }, 0.86);
+    tl.fromTo("#s3-l3", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.26, ease: "power2.inOut" }, 1.06);
+    window.__timelines["s03-corto-breve"] = tl;
+  </script>
+</template>

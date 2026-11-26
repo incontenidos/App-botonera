@@ -1,0 +1,46 @@
+<template>
+  <style>
+    @font-face { font-family: "DM Sans"; font-weight: 300; font-style: italic; src: url("assets/fonts/dm-sans-latin-300-italic.woff2") format("woff2"); }
+    @font-face { font-family: "DM Sans"; font-weight: 400; font-style: normal; src: url("assets/fonts/dm-sans-latin-400-normal.woff2") format("woff2"); }
+    @font-face { font-family: "DM Sans"; font-weight: 700; font-style: normal; src: url("assets/fonts/dm-sans-latin-700-normal.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; background: #000; color: #fff; font-family: "DM Sans", sans-serif; }
+    /* Zona de texto: dentro de la franja segura de Reels (380–1330 px), margen izquierdo de 110 px */
+    .zona { position: absolute; left: 110px; width: 800px; top: 380px; height: 950px;
+      display: flex; flex-direction: column; justify-content: center; }
+    .b { font-weight: 700; }
+    .r { font-weight: 400; }
+    .q { font-weight: 300; font-style: italic; }
+    .gris { color: #888888; }
+    .linea { display: block; }
+    .w { opacity: 0; }
+    .m { display: block; overflow: hidden; padding-bottom: 0.12em; margin-bottom: -0.12em; }
+    .mi { display: block; }
+
+    #s1-a, #s1-b { font-size: 96px; line-height: 1.08; letter-spacing: -0.02em; }
+    #s1-b { font-size: 84px; }
+  </style>
+  <div id="root" data-composition-id="s01-atencion" data-width="1080" data-height="1920">
+    <div class="zona"><div id="s1-a"><span class="linea b"><span id="s1a-w0">Dicen</span> <span class="w" id="s1a-w1">que</span> <span class="w" id="s1a-w2">nos</span> <span class="w" id="s1a-w3">gusta</span> <span class="w" id="s1a-w4">lo</span> <span class="w" id="s1a-w5">breve</span></span></div></div>
+    <div class="zona"><div id="s1-b"><span class="linea r"><span class="w" id="s1b-w0">porque</span> <span class="w" id="s1b-w1">ya</span> <span class="w" id="s1b-w2">no</span> <span class="w" id="s1b-w3">sabemos</span> <span class="w" id="s1b-w4">prestar</span> <span class="w" id="s1b-w5">atención.</span></span></div></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Aparición seca (sin fundido) y corte duro, ambos reversibles al buscar en la línea de tiempo
+    const appear = (sel, t) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: 0.001, immediateRender: false }, t);
+    const cut = (sel, t) => tl.fromTo(sel, { opacity: 1 }, { opacity: 0, duration: 0.001, immediateRender: false }, t);
+    // La primera palabra ya está en el fotograma 0 (es la miniatura del reel)
+    appear("#s1a-w1", 0.27);
+    appear("#s1a-w2", 0.49);
+    appear("#s1a-w3", 0.71);
+    appear("#s1a-w4", 0.93);
+    appear("#s1a-w5", 1.15);
+    cut("#s1-a", 2.2);
+    appear("#s1b-w0", 2.25);
+    appear("#s1b-w1", 2.45);
+    appear("#s1b-w2", 2.65);
+    appear("#s1b-w3", 2.85);
+    appear("#s1b-w4", 3.05);
+    appear("#s1b-w5", 3.25);
+    window.__timelines["s01-atencion"] = tl;
+  </script>
+</template>

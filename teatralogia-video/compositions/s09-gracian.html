@@ -1,0 +1,44 @@
+<template>
+  <style>
+    @font-face { font-family: "DM Sans"; font-weight: 300; font-style: italic; src: url("assets/fonts/dm-sans-latin-300-italic.woff2") format("woff2"); }
+    @font-face { font-family: "DM Sans"; font-weight: 400; font-style: normal; src: url("assets/fonts/dm-sans-latin-400-normal.woff2") format("woff2"); }
+    @font-face { font-family: "DM Sans"; font-weight: 700; font-style: normal; src: url("assets/fonts/dm-sans-latin-700-normal.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; background: #000; color: #fff; font-family: "DM Sans", sans-serif; }
+    /* Zona de texto: dentro de la franja segura de Reels (380–1330 px), margen izquierdo de 110 px */
+    .zona { position: absolute; left: 110px; width: 800px; top: 380px; height: 950px;
+      display: flex; flex-direction: column; justify-content: center; }
+    .b { font-weight: 700; }
+    .r { font-weight: 400; }
+    .q { font-weight: 300; font-style: italic; }
+    .gris { color: #888888; }
+    .linea { display: block; }
+    .w { opacity: 0; }
+    .m { display: block; overflow: hidden; padding-bottom: 0.12em; margin-bottom: -0.12em; }
+    .mi { display: block; }
+
+    #s9-q { font-size: 84px; line-height: 1.1; }
+    #s9-f { margin-top: 40px; font-size: 38px; }
+    #s9-r { margin-top: 90px; font-size: 52px; line-height: 1.2; }
+  </style>
+  <div id="root" data-composition-id="s09-gracian" data-width="1080" data-height="1920">
+    <div class="zona">
+      <div id="s9-q" class="q"><span class="m"><span class="mi" id="s9-l0">“Lo bueno, si breve,</span></span>
+<span class="m"><span class="mi" id="s9-l1">dos veces bueno.”</span></span></div>
+      <div id="s9-f" class="r gris">— Baltasar Gracián, 1647</div>
+      <div id="s9-r" class="q"><span class="m"><span class="mi" id="s9r-l0">y aun lo malo, si poco,</span></span>
+<span class="m"><span class="mi" id="s9r-l1">no tan malo.</span></span></div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Aparición seca (sin fundido) y corte duro, ambos reversibles al buscar en la línea de tiempo
+    const appear = (sel, t) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: 0.001, immediateRender: false }, t);
+    const cut = (sel, t) => tl.fromTo(sel, { opacity: 1 }, { opacity: 0, duration: 0.001, immediateRender: false }, t);
+    tl.fromTo("#s9-l0", { yPercent: 105 }, { yPercent: 0, duration: 0.38, ease: "power3.out" }, 0.00);
+    tl.fromTo("#s9-l1", { yPercent: 105 }, { yPercent: 0, duration: 0.38, ease: "power3.out" }, 0.14);
+    appear("#s9-f", 0.9);
+    tl.fromTo("#s9r-l0", { yPercent: 105 }, { yPercent: 0, duration: 0.38, ease: "power3.out" }, 2.90);
+    tl.fromTo("#s9r-l1", { yPercent: 105 }, { yPercent: 0, duration: 0.38, ease: "power3.out" }, 3.04);
+    window.__timelines["s09-gracian"] = tl;
+  </script>
+</template>

@@ -1,0 +1,48 @@
+<template>
+  <style>
+    @font-face { font-family: "DM Sans"; font-weight: 300; font-style: italic; src: url("assets/fonts/dm-sans-latin-300-italic.woff2") format("woff2"); }
+    @font-face { font-family: "DM Sans"; font-weight: 400; font-style: normal; src: url("assets/fonts/dm-sans-latin-400-normal.woff2") format("woff2"); }
+    @font-face { font-family: "DM Sans"; font-weight: 700; font-style: normal; src: url("assets/fonts/dm-sans-latin-700-normal.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; background: #000; color: #fff; font-family: "DM Sans", sans-serif; }
+    /* Zona de texto: dentro de la franja segura de Reels (380–1330 px), margen izquierdo de 110 px */
+    .zona { position: absolute; left: 110px; width: 800px; top: 380px; height: 950px;
+      display: flex; flex-direction: column; justify-content: center; }
+    .b { font-weight: 700; }
+    .r { font-weight: 400; }
+    .q { font-weight: 300; font-style: italic; }
+    .gris { color: #888888; }
+    .linea { display: block; }
+    .w { opacity: 0; }
+    .m { display: block; overflow: hidden; padding-bottom: 0.12em; margin-bottom: -0.12em; }
+    .mi { display: block; }
+
+    #s11 { position: absolute; left: 110px; width: 800px; top: 380px; height: 950px;
+      display: flex; flex-direction: column; justify-content: center; text-align: center; }
+    #s11-t { font-size: 116px; letter-spacing: 0.01em; line-height: 1; }
+    #s11-s { margin-top: 18px; font-size: 46px; }
+    #s11-o { margin-top: 90px; font-size: 46px; line-height: 1.25; }
+    #s11-d { margin-top: 14px; font-size: 40px; }
+    #s11-i { margin-top: 70px; font-size: 38px; line-height: 1.35; }
+    #s11-h { margin-top: 70px; font-size: 40px; }
+  </style>
+  <div id="root" data-composition-id="s11-placa" data-width="1080" data-height="1920">
+    <div id="s11">
+      <div id="s11-t" class="b">TEATRALOGÍA</div>
+      <div id="s11-s" class="r gris">ciclo de obras breves</div>
+      <div id="s11-o" class="b">El Velorio de Roberto<br /><span class="r">— de Azul Haure</span></div>
+      <div id="s11-d" class="r">Dirección: Marian Morelli</div>
+      <div id="s11-i" class="r">Viernes 21 h · El Piso Teatro<br />Hidalgo 878<br />Hasta el 18/12</div>
+      <div id="s11-h" class="b">@teatralogia.ciclo</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Aparición seca (sin fundido) y corte duro, ambos reversibles al buscar en la línea de tiempo
+    const appear = (sel, t) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: 0.001, immediateRender: false }, t);
+    const cut = (sel, t) => tl.fromTo(sel, { opacity: 1 }, { opacity: 0, duration: 0.001, immediateRender: false }, t);
+    // La marca aparece seca; el resto entra en cascada corta
+    appear("#s11-t", 0);
+    ["#s11-s", "#s11-o", "#s11-d", "#s11-i", "#s11-h"].forEach((sel, i) => appear(sel, 0.35 + i * 0.18));
+    window.__timelines["s11-placa"] = tl;
+  </script>
+</template>

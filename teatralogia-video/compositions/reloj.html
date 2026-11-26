@@ -1,0 +1,29 @@
+<template>
+  <style>
+    @font-face { font-family: "DM Sans"; font-weight: 300; font-style: italic; src: url("assets/fonts/dm-sans-latin-300-italic.woff2") format("woff2"); }
+    @font-face { font-family: "DM Sans"; font-weight: 400; font-style: normal; src: url("assets/fonts/dm-sans-latin-400-normal.woff2") format("woff2"); }
+    @font-face { font-family: "DM Sans"; font-weight: 700; font-style: normal; src: url("assets/fonts/dm-sans-latin-700-normal.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "DM Sans", sans-serif; }
+    /* Esquina superior derecha, debajo de la barra de Reels */
+    #reloj-t { position: absolute; right: 110px; top: 300px; font-weight: 400; font-size: 34px;
+      color: #888888; letter-spacing: 0.06em; font-variant-numeric: tabular-nums; }
+  </style>
+  <div id="root" data-composition-id="reloj" data-width="1080" data-height="1920">
+    <div id="reloj-t">00:00</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Corre con el video y se congela al llegar al corte a negro (33.4 s)
+    const t = { s: 0 };
+    const pinta = () => {
+      const v = Math.floor(t.s);
+      document.querySelector("#reloj-t").textContent =
+        String(Math.floor(v / 60)).padStart(2, "0") + ":" + String(v % 60).padStart(2, "0");
+    };
+    tl.fromTo(t, { s: 0 }, { s: 33.4, duration: 33.4, ease: "none", onUpdate: pinta }, 0);
+    // Corte a negro: desaparece y vuelve congelado en la placa final
+    tl.fromTo("#reloj-t", { opacity: 1 }, { opacity: 0, duration: 0.001, immediateRender: false }, 33.4);
+    tl.fromTo("#reloj-t", { opacity: 0 }, { opacity: 1, duration: 0.001, immediateRender: false }, 33.9);
+    window.__timelines["reloj"] = tl;
+  </script>
+</template>
