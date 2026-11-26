@@ -426,14 +426,38 @@ VOZ = [
 ]
 
 
+# Cadena "de estudio" para la voz (ffmpeg): limpieza, EQ, de-esser, compresión, sala corta y limitador
+CADENA_VOZ = ",".join([
+    "highpass=f=85",                                   # fuera retumbe y golpes de micrófono
+    "afftdn=nr=8:nf=-62",                              # reducción de ruido suave
+    "equalizer=f=280:width_type=o:width=1:g=-3",       # menos "barro"
+    "equalizer=f=450:width_type=o:width=1:g=-6",       # menos sonido de caja (celular)
+    "equalizer=f=1800:width_type=o:width=1:g=2.5",     # articulación
+    "lowshelf=f=130:g=2.5",                            # cuerpo / proximidad
+    "equalizer=f=3300:width_type=o:width=1.2:g=6",     # presencia e inteligibilidad
+    "highshelf=f=7500:g=5",                            # aire
+    "deesser=i=0.45:m=0.5:f=0.5",                      # controla las "s"
+    "acompressor=threshold=-22dB:ratio=3.2:attack=6:release=140:makeup=5:knee=4",
+    "aecho=0.85:0.5:19|31|47:0.07|0.05|0.03",          # sala de estudio muy corta, casi imperceptible
+    "alimiter=limit=0.89:attack=2:release=50:level=false",
+])
+
+
+def procesar_voz():
+    import subprocess
+    src = ROOT / "assets/voz/voz-original.wav"
+    dst = ROOT / "assets/voz/voz-estudio.wav"
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(src), "-af", CADENA_VOZ, "-ar", "48000", "-ac", "1", str(dst)], check=True)
+    return dst
+
+
 def voice_track():
     import wave as _w
-    w = _w.open(str(ROOT / "assets/voz/voz-original.wav"))
+    w = _w.open(str(procesar_voz()))
     sr = w.getframerate()
     x = np.frombuffer(w.readframes(w.getnframes()), dtype=np.int16).astype(float) / 32768
     if sr != SR:
         x = np.interp(np.arange(int(len(x) * SR / sr)) * sr / SR, np.arange(len(x)), x)
-    x = hp(x, 80)  # saca retumbe grave
     hop = n_(0.01)
     rms = np.array([np.sqrt(np.mean(x[i:i + 2 * hop] ** 2) + 1e-12) for i in range(0, len(x) - 2 * hop, hop)])
 
