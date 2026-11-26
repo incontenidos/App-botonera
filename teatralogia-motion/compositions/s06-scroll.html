@@ -1,0 +1,86 @@
+<template>
+  <style>
+    @font-face { font-family: "DM Sans"; font-weight: 400; src: url("assets/fonts/dm-sans-latin-400-normal.woff2") format("woff2"); }
+    @font-face { font-family: "DM Sans"; font-weight: 700; src: url("assets/fonts/dm-sans-latin-700-normal.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; background: #000; overflow: hidden; font-family: "DM Sans", sans-serif; color: #fff; }
+    #s6-cam { position: absolute; inset: 0; transform-origin: 50% 50%; }
+    #s6-feed { position: absolute; left: 0; top: 0; width: 1080px; filter: url(#s6-mb); }
+    #s6-titulo { position: absolute; left: 110px; width: 860px; top: 700px; font-weight: 700; font-size: 96px; line-height: 1.04; letter-spacing: -0.025em; }
+    #s6-titulo .m { display: block; overflow: hidden; }
+    #s6-titulo .mi { display: block; }
+    .s6-card { position: absolute; left: 130px; width: 820px; border-radius: 30px; background: #0e0e0e; border: 1.5px solid #2c2c2c; padding: 30px 34px; }
+    .s6-card .u { display: flex; align-items: center; gap: 16px; font-size: 28px; color: #888888; }
+    .s6-card .av { width: 54px; height: 54px; border-radius: 50%; background: #2a2a2a; }
+    .s6-card .t { margin-top: 20px; font-size: 44px; font-weight: 700; line-height: 1.1; }
+    .s6-card .sk { margin-top: 18px; height: 16px; border-radius: 8px; background: #222; }
+    .s6-card .ft { margin-top: 22px; display: flex; gap: 34px; font-size: 30px; color: #bbb; align-items: center; }
+    .s6-card svg { width: 34px; height: 34px; vertical-align: -6px; margin-right: 8px; }
+    .s6-card .big { display: flex; justify-content: center; padding: 20px 0 6px; }
+    .s6-card .big svg { width: 170px; height: 170px; margin: 0; }
+    /* Primer plano: la frase pasa en una capa más cercana y más lenta (profundidad) */
+    #s6-escapa { position: absolute; left: 90px; width: 900px; top: 0; padding: 38px 44px; border-radius: 34px;
+      background: rgba(0,0,0,.9); border: 2px solid #fff; font-weight: 700; font-size: 80px; line-height: 1.06; letter-spacing: -0.02em;
+      box-shadow: 0 40px 90px rgba(0,0,0,.9); }
+    #s6-mbsvg { position: absolute; width: 0; height: 0; }
+  </style>
+  <div id="root" data-composition-id="s06-scroll" data-width="1080" data-height="1920">
+    <svg id="s6-mbsvg" aria-hidden="true"><filter id="s6-mb" x="0" y="-5%" width="100%" height="110%"><feGaussianBlur id="s6-blur" stdDeviation="0 0" /></filter></svg>
+    <div id="s6-cam" data-layout-allow-overflow data-layout-allow-overlap>
+      <div id="s6-feed" data-layout-ignore>
+        <div id="s6-titulo"><span class="m"><span class="mi" id="s6-l0">El scroll</span></span><span class="m"><span class="mi" id="s6-l1">también es breve.</span></span></div>
+      </div>
+      <div id="s6-escapa">Pero siempre te<br />deja escapar.</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    let seed = 0x5c7011;
+    const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+    const HEART = '<svg viewBox="0 0 24 24"><path fill="#fff" d="M12 21s-7.5-4.6-9.6-9.2C.9 8.5 3 4.5 6.8 4.5c2.2 0 3.6 1.2 5.2 3 1.6-1.8 3-3 5.2-3 3.8 0 5.9 4 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg>';
+    const FACE = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#fff" stroke-width="1.6"/><circle cx="8.5" cy="10" r="1.3" fill="#fff"/><circle cx="15.5" cy="10" r="1.3" fill="#fff"/><path d="M7.5 14.5c1.2 2 2.7 3 4.5 3s3.3-1 4.5-3" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>';
+    const STAR = '<svg viewBox="0 0 24 24"><path fill="#fff" d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.8-6.3 3.8 1.7-7L2 9.2l7.1-.6z"/></svg>';
+    const FRASES = ["no tengo tiempo", "ver más", "lectura de 1 min", "¿seguís ahí?", "3 tips en 15 s", "después lo veo", "te puede interesar", "resumen rápido", "swipe para seguir", "esto es lo último", "cargando…", "no te lo pierdas"];
+    const feed = document.querySelector("#s6-feed");
+    let y = 1180;
+    for (let i = 0; i < 42; i++) {
+      const c = document.createElement("div");
+      c.className = "s6-card";
+      const kind = i % 4;
+      const likes = (1 + Math.floor(rnd() * 98)) + "," + Math.floor(rnd() * 9) + " k";
+      let h = 0;
+      if (kind === 3) {
+        c.innerHTML = '<div class="u"><span class="av"></span>@usuario_' + (100 + Math.floor(rnd() * 900)) + '</div><div class="big">' + (i % 8 === 3 ? FACE : STAR) + '</div><div class="ft"><span>' + HEART + likes + '</span><span>' + (Math.floor(rnd() * 900) + 100) + ' comentarios</span></div>';
+        h = 400;
+      } else {
+        c.innerHTML = '<div class="u"><span class="av"></span>@usuario_' + (100 + Math.floor(rnd() * 900)) + ' · ahora</div><div class="t">' + FRASES[i % FRASES.length] + '</div><div class="sk" style="width:' + (60 + rnd() * 35) + '%"></div><div class="sk" style="width:' + (40 + rnd() * 40) + '%"></div><div class="ft"><span>' + HEART + likes + '</span><span>' + FACE + (Math.floor(rnd() * 90) + 3) + '</span></div>';
+        h = 330;
+      }
+      c.style.top = y + "px";
+      feed.appendChild(c);
+      y += h + 34;
+    }
+    // Título: entra con máscara y queda arriba del feed
+    tl.fromTo("#s6-l0", { yPercent: 105 }, { yPercent: 0, duration: 0.4, ease: "power4.out" }, 0.1);
+    tl.fromTo("#s6-l1", { yPercent: 105 }, { yPercent: 0, duration: 0.4, ease: "power4.out" }, 0.22);
+    // Feed: velocidad que crece exponencialmente; el desenfoque vertical sigue a la velocidad (motion blur)
+    const T0 = 1.2, V0 = 480, K = 0.56;
+    const blur = document.querySelector("#s6-blur");
+    const st = { t: 0 };
+    const paint = () => {
+      const k = Math.max(0, st.t - T0);
+      const dist = V0 / K * (Math.exp(K * k) - 1);
+      const v = k > 0 ? V0 * Math.exp(K * k) : 0;
+      feed.style.transform = "translateY(" + (-dist) + "px)";
+      blur.setAttribute("stdDeviation", "0 " + Math.min(26, v / 260).toFixed(2));
+    };
+    tl.fromTo(st, { t: 0 }, { t: 6, duration: 6, ease: "none", onUpdate: paint }, 0);
+    // Primer plano: "Pero siempre te deja escapar." cruza más lento, legible, y se escapa por arriba
+    tl.fromTo("#s6-escapa", { y: 1950 }, { y: 760, duration: 1.0, ease: "power3.out" }, 2.9);
+    tl.to("#s6-escapa", { y: 640, duration: 1.2, ease: "none" }, 3.9);
+    tl.to("#s6-escapa", { y: -700, duration: 0.85, ease: "power3.in" }, 5.1);
+    tl.fromTo("#s6-escapa", { filter: "blur(0px)" }, { filter: "blur(8px)", duration: 0.4, ease: "power2.in", immediateRender: false }, 5.5);
+    // Cámara: inclinación y empuje que acompañan la aceleración
+    tl.fromTo("#s6-cam", { rotation: 0, scale: 1 }, { rotation: -2.5, scale: 1.06, duration: 4.8, ease: "power2.in" }, 1.2);
+    window.__timelines["s06-scroll"] = tl;
+  </script>
+</template>

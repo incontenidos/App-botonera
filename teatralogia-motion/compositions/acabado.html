@@ -1,0 +1,33 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    /* Grano de película: textura con semilla que salta de posición 24 veces por segundo */
+    #ac-grano { position: absolute; left: -256px; top: -256px; width: 1592px; height: 2432px; opacity: 0.35;
+      background: url("assets/img/grano-claro.png") repeat; }
+    #ac-grano2 { position: absolute; left: -256px; top: -256px; width: 1592px; height: 2432px; opacity: 0.45;
+      background: url("assets/img/grano-oscuro.png") repeat; }
+    /* Viñeta */
+    #ac-vineta { position: absolute; inset: 0;
+      background: radial-gradient(ellipse 75% 62% at 50% 46%, transparent 55%, rgba(0,0,0,.55) 100%); }
+  </style>
+  <div id="root" data-composition-id="acabado" data-width="1080" data-height="1920">
+    <div id="ac-grano" data-layout-ignore></div>
+    <div id="ac-grano2" data-layout-ignore></div>
+    <div id="ac-vineta" data-layout-ignore></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    let seed = 0x9a41;
+    const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+    const POS = Array.from({ length: 64 }, () => [Math.floor(rnd() * 256), Math.floor(rnd() * 256)]);
+    const g1 = document.querySelector("#ac-grano"), g2 = document.querySelector("#ac-grano2");
+    const st = { t: 0 };
+    tl.fromTo(st, { t: 0 }, { t: 47.8, duration: 47.8, ease: "none", onUpdate: () => {
+      const i = Math.floor(st.t * 24);
+      const a = POS[i % 64], b = POS[(i * 7 + 13) % 64];
+      g1.style.transform = "translate(" + a[0] + "px," + a[1] + "px)";
+      g2.style.transform = "translate(" + b[0] + "px," + b[1] + "px)";
+    } }, 0);
+    window.__timelines["acabado"] = tl;
+  </script>
+</template>

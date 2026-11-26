@@ -1,0 +1,42 @@
+<template>
+  <style>
+    @font-face { font-family: "DM Sans"; font-weight: 700; src: url("assets/fonts/dm-sans-latin-700-normal.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; background: #000; overflow: hidden; font-family: "DM Sans", sans-serif; color: #fff; }
+    /* Escenario 3D: la cámara sigue el giro */
+    #s3-cam { position: absolute; inset: 0; perspective: 1400px; perspective-origin: 50% 46%; }
+    #s3-pivote { position: absolute; left: 90px; width: 900px; top: 640px; height: 440px;
+      transform-style: preserve-3d; display: flex; align-items: center; justify-content: center; }
+    #s3-texto { text-align: center; font-weight: 700; font-size: 132px; line-height: 1.02; letter-spacing: -0.035em;
+      backface-visibility: visible; }
+    /* Luz de recorte que acompaña el giro */
+    #s3-luz { position: absolute; left: 140px; top: 520px; width: 800px; height: 680px; opacity: 0;
+      background: radial-gradient(ellipse at 50% 50%, rgba(255,255,255,.12), transparent 65%); }
+  </style>
+  <div id="root" data-composition-id="s03-giro" data-width="1080" data-height="1920">
+    <div id="s3-cam">
+      <div id="s3-luz"></div>
+      <div id="s3-pivote">
+        <div id="s3-texto">Yo creo que<br />es al revés.</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Quieto, en el silencio (0–1.2 s). Después gira 180° en 3D: termina literalmente al revés
+    tl.fromTo("#s3-pivote", { rotationX: 0, rotationY: 0, z: 0 },
+      { rotationX: 180, rotationY: 180, duration: 0.9, ease: "expo.inOut" }, 1.2);
+    // La cámara acompaña: se acerca en el medio del giro y frena con un leve overshoot
+    tl.fromTo("#s3-pivote", { z: 0 }, { z: -260, duration: 0.45, ease: "power2.in", immediateRender: false }, 1.2);
+    tl.to("#s3-pivote", { z: 0, duration: 0.5, ease: "back.out(1.6)" }, 1.65);
+    tl.fromTo("#s3-cam", { rotation: 0, scale: 1 }, { rotation: -6, scale: 1.08, duration: 0.9, ease: "expo.inOut" }, 1.2);
+    tl.to("#s3-cam", { rotation: 0, duration: 0.5, ease: "back.out(2)" }, 2.1);
+    tl.fromTo("#s3-luz", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 1.4);
+    // Motion blur durante la parte rápida del giro
+    tl.fromTo("#s3-texto", { filter: "blur(0px)" }, { filter: "blur(7px)", duration: 0.35, ease: "power2.in" }, 1.35);
+    tl.to("#s3-texto", { filter: "blur(0px)", duration: 0.3, ease: "power2.out" }, 1.75);
+    // Golpe de bombo al terminar (2.1 s): pequeño rebote de cámara
+    tl.to("#s3-cam", { y: 14, duration: 0.05, ease: "power4.out" }, 2.1);
+    tl.to("#s3-cam", { y: 0, duration: 0.25, ease: "power3.out" }, 2.15);
+    window.__timelines["s03-giro"] = tl;
+  </script>
+</template>

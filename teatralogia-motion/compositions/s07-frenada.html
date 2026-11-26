@@ -1,0 +1,62 @@
+<template>
+  <style>
+    @font-face { font-family: "DM Sans"; font-weight: 400; src: url("assets/fonts/dm-sans-latin-400-normal.woff2") format("woff2"); }
+    @font-face { font-family: "DM Sans"; font-weight: 700; src: url("assets/fonts/dm-sans-latin-700-normal.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; background: #000; overflow: hidden; font-family: "DM Sans", sans-serif; color: #fff; }
+    #s7-cam { position: absolute; inset: 0; transform-origin: 50% 40%; }
+    /* El feed, congelado en el instante del freno */
+    #s7-feed { position: absolute; inset: 0; transform-origin: 50% 0%; }
+    .s7-card { position: absolute; left: 130px; width: 820px; height: 330px; border-radius: 30px; background: #0e0e0e; border: 1.5px solid #2c2c2c; padding: 30px 34px; }
+    .s7-card .u { font-size: 28px; color: #888888; }
+    .s7-card .t { margin-top: 20px; font-size: 44px; font-weight: 700; }
+    .s7-card .sk { margin-top: 18px; height: 16px; border-radius: 8px; background: #222; width: 70%; }
+    #s7-sombra { position: absolute; inset: 0; background: #000; opacity: 0; }
+    /* Telón: dos masas negras con pliegues verticales que se cierran desde los costados */
+    .s7-telon { position: absolute; top: 0; width: 560px; height: 1920px;
+      background: repeating-linear-gradient(90deg, #050505 0 34px, #141414 34px 52px, #0a0a0a 52px 80px, #1a1a1a 80px 90px, #060606 90px 120px); }
+    #s7-izq { left: 0; box-shadow: inset -40px 0 60px rgba(0,0,0,.9); }
+    #s7-der { right: 0; box-shadow: inset 40px 0 60px rgba(0,0,0,.9); }
+    /* Reflector cenital */
+    #s7-cono { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; opacity: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,.2), rgba(255,255,255,.05) 70%, transparent);
+      clip-path: polygon(46% 0, 54% 0, 86% 78%, 14% 78%); }
+    #s7-charco { position: absolute; left: 90px; top: 1330px; width: 900px; height: 220px; border-radius: 50%; opacity: 0;
+      background: radial-gradient(ellipse at 50% 50%, rgba(255,255,255,.22), rgba(255,255,255,.05) 55%, transparent 72%); }
+    #s7-texto { position: absolute; left: 110px; width: 860px; top: 720px; text-align: center; opacity: 0;
+      font-weight: 700; font-size: 104px; line-height: 1.02; letter-spacing: -0.02em; text-shadow: 0 0 40px rgba(255,255,255,.18); }
+  </style>
+  <div id="root" data-composition-id="s07-frenada" data-width="1080" data-height="1920">
+    <div id="s7-cam" data-layout-allow-overflow data-layout-allow-overlap>
+      <div id="s7-feed" data-layout-ignore>
+        <div class="s7-card" style="top:-120px"><div class="u">@usuario_412 · ahora</div><div class="t">esto es lo último</div><div class="sk"></div></div>
+        <div class="s7-card" style="top:250px"><div class="u">@usuario_877 · ahora</div><div class="t">no te lo pierdas</div><div class="sk"></div></div>
+        <div class="s7-card" style="top:620px"><div class="u">@usuario_133 · ahora</div><div class="t">swipe para seguir</div><div class="sk"></div></div>
+        <div class="s7-card" style="top:990px"><div class="u">@usuario_560 · ahora</div><div class="t">cargando…</div><div class="sk"></div></div>
+        <div class="s7-card" style="top:1360px"><div class="u">@usuario_298 · ahora</div><div class="t">después lo veo</div><div class="sk"></div></div>
+        <div class="s7-card" style="top:1730px"><div class="u">@usuario_704 · ahora</div><div class="t">ver más</div><div class="sk"></div></div>
+      </div>
+      <div id="s7-sombra"></div>
+      <div class="s7-telon" id="s7-izq" data-layout-ignore></div>
+      <div class="s7-telon" id="s7-der" data-layout-ignore></div>
+      <div id="s7-cono"></div>
+      <div id="s7-charco"></div>
+      <div id="s7-texto">EN EL TEATRO<br />NO HAY SCROLL.</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // FRENO EN SECO: golpe de cámara en el primer cuadro
+    tl.fromTo("#s7-cam", { y: -60, scale: 1.05 }, { y: 0, scale: 1, duration: 0.16, ease: "expo.out" }, 0);
+    // El feed se oscurece y cae
+    tl.fromTo("#s7-sombra", { opacity: 0 }, { opacity: 0.7, duration: 0.3, ease: "power2.out" }, 0.1);
+    tl.fromTo("#s7-feed", { y: 0, rotation: 0 }, { y: 1800, rotation: 5, duration: 0.75, ease: "power3.in" }, 0.25);
+    // El telón se cierra desde los costados y frena en seco
+    tl.fromTo("#s7-izq", { x: -580 }, { x: 0, duration: 0.6, ease: "power4.out" }, 0.4);
+    tl.fromTo("#s7-der", { x: 580 }, { x: 0, duration: 0.6, ease: "power4.out" }, 0.4);
+    // Reflector cenital (1.3 s): se enciende y desde ahí nada se mueve, sólo el grano
+    tl.fromTo("#s7-cono", { opacity: 0 }, { opacity: 1, duration: 0.001, immediateRender: false }, 1.3);
+    tl.fromTo("#s7-charco", { opacity: 0 }, { opacity: 1, duration: 0.001, immediateRender: false }, 1.3);
+    tl.fromTo("#s7-texto", { opacity: 0 }, { opacity: 1, duration: 0.001, immediateRender: false }, 1.3);
+    window.__timelines["s07-frenada"] = tl;
+  </script>
+</template>

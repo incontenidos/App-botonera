@@ -1,0 +1,51 @@
+<template>
+  <style>
+    @font-face { font-family: "DM Sans"; font-weight: 400; src: url("assets/fonts/dm-sans-latin-400-normal.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; background: #000; overflow: hidden; font-family: "DM Sans", sans-serif; color: #fff; }
+    /* Ken Burns 100% → 105% sobre toda la imagen, centrado para no empujar el título hacia la interfaz */
+    #s11-kb { position: absolute; inset: 0; transform-origin: 50% 41%; }
+    .s11-capa { position: absolute; inset: 0; }
+    .s11-fondo { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+    /* La placa ocupa todo el ancho; un poco arriba del centro para que "Viernes 21 h – Hidalgo 878" quede sobre la interfaz */
+    .s11-placa { position: absolute; left: 0; top: 140px; width: 1080px; height: 1440px; }
+    /* Capa en blanco y negro, encima: el color se enciende desde el centro hacia afuera */
+    #s11-bn { --r: 0px;
+      -webkit-mask-image: radial-gradient(circle at 50% 46%, transparent var(--r), #000 calc(var(--r) + 180px));
+      mask-image: radial-gradient(circle at 50% 46%, transparent var(--r), #000 calc(var(--r) + 180px)); }
+    /* Reflector que recorre la placa en blanco y negro */
+    #s11-spot { position: absolute; inset: 0; --sx: 540px; --sy: 330px;
+      background: radial-gradient(circle at var(--sx) var(--sy), transparent 0, transparent 220px, rgba(0,0,0,.88) 440px); }
+    #s11-pie { position: absolute; left: 0; right: 0; top: 1640px; text-align: center; font-weight: 400; font-size: 34px; letter-spacing: .04em; opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="s11-placa" data-width="1080" data-height="1920">
+    <div id="s11-kb" data-layout-allow-overlap>
+      <div class="s11-capa" id="s11-color">
+        <img class="s11-fondo" src="assets/img/fondo-color.jpg" alt="" />
+        <img class="s11-placa" src="assets/img/placa-color.jpg" alt="El Velorio de Roberto, Teatralogía: viernes 21 h, Hidalgo 878" />
+      </div>
+      <div class="s11-capa" id="s11-bn">
+        <img class="s11-fondo" src="assets/img/fondo-bn.jpg" alt="" />
+        <img class="s11-placa" src="assets/img/placa-bn.jpg" alt="" />
+      </div>
+    </div>
+    <div id="s11-spot" data-layout-ignore></div>
+    <div id="s11-pie">@teatralogia.ciclo · Hasta el 18/12</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#s11-kb", { scale: 1 }, { scale: 1.05, duration: 6, ease: "sine.inOut" }, 0);
+    // El haz recorre la placa en blanco y negro: título → personajes → pie
+    tl.fromTo("#s11-spot", { opacity: 0, "--sx": "540px", "--sy": "330px" }, { opacity: 1, duration: 0.12, ease: "power2.out" }, 0.1);
+    tl.to("#s11-spot", { "--sx": "300px", "--sy": "760px", duration: 0.7, ease: "power3.inOut" }, 0.55);
+    tl.to("#s11-spot", { "--sx": "780px", "--sy": "900px", duration: 0.6, ease: "power3.inOut" }, 1.3);
+    tl.to("#s11-spot", { "--sx": "540px", "--sy": "1300px", duration: 0.5, ease: "power3.inOut" }, 1.95);
+    // Tercera llamada (golpes en 1.0, 1.8 y 2.6 s): el color se enciende en tres pasos desde el centro
+    tl.fromTo("#s11-bn", { "--r": "0px" }, { "--r": "260px", duration: 0.35, ease: "expo.out", immediateRender: false }, 1.0);
+    tl.to("#s11-bn", { "--r": "620px", duration: 0.35, ease: "expo.out" }, 1.8);
+    tl.to("#s11-bn", { "--r": "1500px", duration: 0.45, ease: "expo.out" }, 2.6);
+    // En el último golpe se prenden todas las luces
+    tl.to("#s11-spot", { opacity: 0, duration: 0.35, ease: "power2.out" }, 2.6);
+    tl.fromTo("#s11-pie", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 3.0);
+    window.__timelines["s11-placa"] = tl;
+  </script>
+</template>

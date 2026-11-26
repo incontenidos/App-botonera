@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+      #root { width: 100%; height: 100%; }
+      #fondo { position: absolute; inset: 0; background: #000; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="47.8"
+      data-width="1080" data-height="1920">
+      <div id="fondo"></div>
+      <!-- Escenas. Negro total: 8.6–9.0 s (corte de la escena 2) y 41.0–41.8 s (apagón) -->
+      <div id="s01-gancho" data-composition-id="s01-gancho" data-composition-src="compositions/s01-gancho.html"
+        data-start="0" data-duration="4" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1920" style="z-index:1"></div>
+      <div id="s02-acusacion" data-composition-id="s02-acusacion" data-composition-src="compositions/s02-acusacion.html"
+        data-start="4" data-duration="4.6" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1920" style="z-index:1"></div>
+      <div id="s03-giro" data-composition-id="s03-giro" data-composition-src="compositions/s03-giro.html"
+        data-start="9" data-duration="3" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1920" style="z-index:1"></div>
+      <div id="s04-corto-breve" data-composition-id="s04-corto-breve" data-composition-src="compositions/s04-corto-breve.html"
+        data-start="12" data-duration="6" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1920" style="z-index:1"></div>
+      <div id="s05-chejov" data-composition-id="s05-chejov" data-composition-src="compositions/s05-chejov.html"
+        data-start="18" data-duration="4" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1920" style="z-index:1"></div>
+      <div id="s06-scroll" data-composition-id="s06-scroll" data-composition-src="compositions/s06-scroll.html"
+        data-start="22" data-duration="6" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1920" style="z-index:1"></div>
+      <div id="s07-frenada" data-composition-id="s07-frenada" data-composition-src="compositions/s07-frenada.html"
+        data-start="28" data-duration="4" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1920" style="z-index:1"></div>
+      <div id="s08-estar" data-composition-id="s08-estar" data-composition-src="compositions/s08-estar.html"
+        data-start="32" data-duration="3" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1920" style="z-index:1"></div>
+      <div id="s09-gracian" data-composition-id="s09-gracian" data-composition-src="compositions/s09-gracian.html"
+        data-start="35" data-duration="6" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1920" style="z-index:1"></div>
+      <div id="s11-placa" data-composition-id="s11-placa" data-composition-src="compositions/s11-placa.html"
+        data-start="41.8" data-duration="6" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1920" style="z-index:1"></div>
+      <!-- Cronómetro y acabado (grano + viñeta) sobre todo el video -->
+      <div id="reloj" data-composition-id="reloj" data-composition-src="compositions/reloj.html"
+        data-start="0" data-duration="41.8" data-track-index="2" data-track-kind="graphics"
+        data-width="1080" data-height="1920" style="z-index:5"></div>
+      <div id="acabado" data-composition-id="acabado" data-composition-src="compositions/acabado.html"
+        data-start="0" data-duration="47.8" data-track-index="3" data-track-kind="graphics"
+        data-width="1080" data-height="1920" style="z-index:6"></div>
+      <!-- Sonido original generado por tools/sound.py (síntesis, sin derechos de terceros) -->
+      <audio id="musica" class="clip" data-start="0" data-duration="47.8" data-track-index="4" data-volume="1" src="assets/audio/musica.wav"></audio>
+      <audio id="sfx" class="clip" data-start="0" data-duration="47.8" data-track-index="5" data-volume="1" src="assets/audio/sfx.wav"></audio>
+      <audio id="ambiente" class="clip" data-start="0" data-duration="47.8" data-track-index="6" data-volume="1" src="assets/audio/ambiente.wav"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

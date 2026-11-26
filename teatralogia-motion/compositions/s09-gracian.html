@@ -1,0 +1,44 @@
+<template>
+  <style>
+    @font-face { font-family: "DM Sans"; font-weight: 300; font-style: italic; src: url("assets/fonts/dm-sans-latin-300-italic.woff2") format("woff2"); }
+    @font-face { font-family: "DM Sans"; font-weight: 400; src: url("assets/fonts/dm-sans-latin-400-normal.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; background: #000; overflow: hidden; font-family: "DM Sans", sans-serif; color: #000; }
+    #s9-cam { position: absolute; inset: 0; transform-origin: 50% 66%; }
+    #s9-papel { position: absolute; inset: -40px; width: 1160px; height: 2000px; object-fit: cover; }
+    #s9-cita { position: absolute; left: 110px; width: 860px; top: 560px; font-weight: 300; font-style: italic; font-size: 92px; line-height: 1.12; }
+    #s9-cita .m { display: block; overflow: hidden; padding-bottom: .1em; margin-bottom: -.1em; }
+    #s9-cita .mi { display: block; }
+    /* "dos": la palabra se duplica con un eco */
+    .s9-dos { position: relative; display: inline-block; }
+    .s9-eco { position: absolute; left: 0; top: 0; opacity: 0; color: #000; }
+    #s9-firma { position: absolute; left: 114px; top: 820px; font-weight: 400; font-size: 40px; color: #555; opacity: 0; letter-spacing: .02em; }
+    #s9-remate { position: absolute; left: 110px; width: 860px; top: 1080px; font-weight: 300; font-style: italic; font-size: 54px; line-height: 1.2; color: #111; opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="s09-gracian" data-width="1080" data-height="1920">
+    <div id="s9-cam" data-layout-allow-overlap>
+      <img id="s9-papel" src="assets/img/papel.jpg" alt="" />
+      <div id="s9-cita">
+        <span class="m"><span class="mi" id="s9-l0">“Lo bueno, si breve,</span></span>
+        <span class="m"><span class="mi" id="s9-l1"><span class="s9-dos">dos<span class="s9-eco" id="s9-eco1">dos</span><span class="s9-eco" id="s9-eco2">dos</span></span> veces bueno.”</span></span>
+      </div>
+      <div id="s9-firma">— Baltasar Gracián, 1647</div>
+      <div id="s9-remate">y aun lo malo, si poco,<br />no tan malo.</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Papel: corte duro desde el negro, con un leve asentamiento
+    tl.fromTo("#s9-papel", { scale: 1.06 }, { scale: 1, duration: 1.2, ease: "power3.out" }, 0);
+    tl.fromTo("#s9-l0", { yPercent: 108 }, { yPercent: 0, duration: 0.5, ease: "power4.out" }, 0.15);
+    tl.fromTo("#s9-l1", { yPercent: 108 }, { yPercent: 0, duration: 0.5, ease: "power4.out" }, 0.3);
+    // "dos" se duplica: dos ecos que se separan y se quedan como fantasmas
+    tl.fromTo("#s9-eco1", { opacity: 0, x: 0, y: 0 }, { opacity: 0.35, x: 16, y: -14, duration: 0.35, ease: "power3.out" }, 1.0);
+    tl.fromTo("#s9-eco2", { opacity: 0, x: 0, y: 0 }, { opacity: 0.15, x: 32, y: -28, duration: 0.45, ease: "power3.out" }, 1.08);
+    tl.fromTo("#s9-firma", { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 1.5);
+    // Pausa. El remate entra de reojo (desde el costado, torcido) y la cámara hace un mini zoom cómico (boop: 3.4 s)
+    tl.fromTo("#s9-remate", { opacity: 0, x: 120, rotation: -4 }, { opacity: 1, x: 0, rotation: -2, duration: 0.3, ease: "power3.out" }, 3.15);
+    tl.fromTo("#s9-cam", { scale: 1, x: 0, y: 0 }, { scale: 1.22, x: 70, y: -160, duration: 0.22, ease: "back.out(1.7)", immediateRender: false }, 3.4);
+    tl.to("#s9-remate", { rotation: 0, duration: 0.2, ease: "back.out(2)" }, 3.45);
+    window.__timelines["s09-gracian"] = tl;
+  </script>
+</template>

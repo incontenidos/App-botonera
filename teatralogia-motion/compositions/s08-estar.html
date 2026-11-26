@@ -1,0 +1,38 @@
+<template>
+  <style>
+    @font-face { font-family: "DM Sans"; font-weight: 400; src: url("assets/fonts/dm-sans-latin-400-normal.woff2") format("woff2"); }
+    @font-face { font-family: "DM Sans"; font-weight: 700; src: url("assets/fonts/dm-sans-latin-700-normal.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; background: #000; overflow: hidden; font-family: "DM Sans", sans-serif; color: #fff; }
+    #s8-cam { position: absolute; inset: 0; transform-origin: 50% 48%; }
+    #s8-a { position: absolute; left: 110px; width: 860px; top: 790px; text-align: center; font-weight: 400; font-size: 84px; line-height: 1.08; }
+    #s8-b { position: absolute; left: 110px; width: 860px; top: 760px; text-align: center; font-weight: 700; font-size: 136px; line-height: 1.0; letter-spacing: -0.035em; opacity: 0; }
+    #s8-halo { position: absolute; left: 190px; top: 600px; width: 700px; height: 560px; border-radius: 50%; opacity: 0;
+      background: radial-gradient(ellipse at 50% 50%, rgba(255,255,255,.13), transparent 68%); }
+  </style>
+  <div id="root" data-composition-id="s08-estar" data-width="1080" data-height="1920">
+    <div id="s8-cam">
+      <div id="s8-halo"></div>
+      <div id="s8-a">Lo breve<br />no te distrae.</div>
+      <div id="s8-b">Te obliga<br />a estar.</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Llega desde la quietud de la escena anterior: entrada lenta, casi sin movimiento
+    tl.fromTo("#s8-a", { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.45, ease: "power2.out" }, 0);
+    // Se disuelve
+    tl.to("#s8-a", { opacity: 0, filter: "blur(16px)", scale: 1.06, duration: 0.4, ease: "power2.in" }, 1.25);
+    // "Te obliga a estar." aparece con el primer latido (1.6 s) y late dos veces (latidos de sound.py: 33.6 y 34.3)
+    tl.fromTo("#s8-b", { opacity: 0, scale: 0.94 }, { opacity: 1, scale: 1, duration: 0.1, ease: "power3.out" }, 1.48);
+    [1.6, 2.3].forEach((t) => {
+      tl.to("#s8-b", { scale: 1.07, duration: 0.07, ease: "power2.out" }, t);
+      tl.to("#s8-b", { scale: 1.0, duration: 0.11, ease: "power2.in" }, t + 0.07);
+      tl.to("#s8-b", { scale: 1.04, duration: 0.06, ease: "power2.out" }, t + 0.18);
+      tl.to("#s8-b", { scale: 1.0, duration: 0.3, ease: "power3.out" }, t + 0.24);
+      tl.fromTo("#s8-halo", { opacity: 0 }, { opacity: 1, duration: 0.07, ease: "power2.out", immediateRender: false }, t);
+      tl.to("#s8-halo", { opacity: 0, duration: 0.5, ease: "power2.out" }, t + 0.1);
+    });
+    tl.fromTo("#s8-cam", { scale: 1 }, { scale: 1.04, duration: 3, ease: "sine.inOut" }, 0);
+    window.__timelines["s08-estar"] = tl;
+  </script>
+</template>
