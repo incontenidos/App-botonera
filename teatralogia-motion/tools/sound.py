@@ -422,7 +422,7 @@ VOZ = [
     ("13 Lo bueno, si breve, dos veces bueno.",     23.55, 26.06, 36.20),
     # Remate: tercera toma (las dos primeras, 29.7–35.0 s, tienen el error y se descartan)
     ("14 Y aun lo malo, si poco, no tan malo.",     35.08, 37.76, 39.20),
-    ("15 Placa: Teatralogía… Hidalgo 878.",         41.11, 49.82, 43.60),
+    # 15 Placa ("Teatralogía… Hidalgo 878", 41.11–49.82 s): sin voz, la placa ya tiene toda la información
 ]
 
 
