@@ -277,16 +277,22 @@ def crowd(d):
 
 # ---- Música ----
 def electronica():
-    """0 s → fin del scroll: pulso grave y percusión seca que crecen con la aceleración del feed; corte total en la frenada."""
+    """0 s → scroll: pulso grave y percusión seca que crecen con la aceleración del feed.
+    En la frenada NO se corta: sigue, filtrada con un pasa-bajos fuerte y muy baja, como desde otra habitación,
+    hasta fundirse con el piano de "Te obliga a estar"."""
     buf = np.zeros(n_(TOTAL))
     beat = 0.5  # 120 BPM
-    end = T["s7"]
+    end = T["piano"][0] + 0.6  # sigue sonando (filtrada) hasta el cruce con el piano
     s6 = T["s6"]
+
+    s7 = T["s7"]
 
     def g_of(t):
         if t < s6:
             return 0.3 + 0.25 * t / s6
-        k = (np.exp(0.56 * (t - s6)) - 1) / (np.exp(0.56 * (end - s6)) - 1)
+        if t >= s7:
+            return 0.8
+        k = (np.exp(0.56 * (t - s6)) - 1) / (np.exp(0.56 * (s7 - s6)) - 1)
         return 0.55 + 0.45 * k
 
     t, k = 0.0, 0
@@ -309,9 +315,16 @@ def electronica():
                 put(buf, hp(noise(0.03), 7000) * env(0.03, 0.0003, 0.006) * g, t + s16 * beat / sub, 0.25)
         t += beat
         k += 1
-    r = whoosh(end - s6, 200, 7000) * np.linspace(0, 1, n_(end - s6)) ** 2.5
+    r = whoosh(s7 - s6, 200, 7000) * np.linspace(0, 1, n_(s7 - s6)) ** 2.5
     put(buf, r, s6, 0.35)
-    buf[n_(end):] = 0  # corte seco en la frenada
+    # Desde la frenada: "otra habitación" (pasa-bajos fuerte en dos etapas, −18 dB aprox.)
+    i = n_(s7)
+    lejos = lp(lp(buf[i:], 260), 260) * 0.35
+    buf[i:] = lejos
+    # Se funde hacia el piano
+    a, b = n_(T["piano"][0] - 0.6), n_(end)
+    buf[a:b] *= np.linspace(1, 0, b - a)
+    buf[b:] = 0
     return buf
 
 
@@ -352,10 +365,13 @@ def piano_solo():
         t += beat * 4
         i += 1
     wet = reverb(lp(buf, 5200), 3.2, 0.42)
+    wet[: n_(1.0)] *= np.linspace(0, 1, n_(1.0))  # entra suave mientras se va la electrónica
     out = np.zeros(n_(TOTAL))
-    put(out, wet, a)
-    # Se apaga de golpe con el clack del apagón
-    gate(out, b, TOTAL, 0.03)
+    put(out, wet * 0.6, a)  # piano con volumen bajo
+    # En el apagón no se corta: se desvanece hasta la Marcha fúnebre
+    i, j = n_(b), n_(T["placa"])
+    out[i:j] *= np.linspace(1, 0.05, j - i)
+    out[j:] = 0
     return out
 
 
