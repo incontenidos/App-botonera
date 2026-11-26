@@ -5,18 +5,18 @@
     /* Cámara: push-in lento sobre todo el cuadro */
     #s1-cam { position: absolute; inset: 0; transform-origin: 50% 46%; }
     /* Haz del reflector: cono de luz volumétrico desde arriba */
-    #s1-haz { position: absolute; left: -200px; top: -200px; width: 1480px; height: 1500px; opacity: 0;
+    #s1-haz { position: absolute; left: -200px; top: -200px; width: 1480px; height: 1500px; opacity: 1;
       background: radial-gradient(ellipse 34% 62% at 50% 0%, rgba(255,255,255,.16), rgba(255,255,255,.04) 55%, transparent 75%);
       clip-path: polygon(44% 0, 56% 0, 92% 100%, 8% 100%); }
     /* El texto sólo existe donde cae la luz (máscara circular controlada por variables CSS) */
     #s1-texto { position: absolute; inset: 0; color: #fff; font-weight: 700;
-      --x: 50%; --y: 36%; --r: 0px;
+      --x: 50%; --y: 44%; --r: 1100px;
       -webkit-mask-image: radial-gradient(circle at var(--x) var(--y), #000 calc(var(--r) * .62), rgba(0,0,0,.25) var(--r), transparent calc(var(--r) * 1.25));
       mask-image: radial-gradient(circle at var(--x) var(--y), #000 calc(var(--r) * .62), rgba(0,0,0,.25) var(--r), transparent calc(var(--r) * 1.25)); }
-    .s1-l { position: absolute; left: -26px; white-space: nowrap; font-size: 212px; line-height: 1; letter-spacing: -0.045em; }
-    #s1-l1 { top: 560px; }
-    #s1-l2 { top: 800px; }
-    #s1-l3 { top: 1030px; }
+    .s1-l { position: absolute; left: 80px; white-space: nowrap; font-size: 170px; line-height: 1; letter-spacing: -0.045em; }
+    #s1-l1 { top: 640px; }
+    #s1-l2 { top: 830px; }
+    #s1-l3 { top: 1020px; }
   </style>
   <div id="root" data-composition-id="s01-gancho" data-width="1080" data-height="1920">
     <div id="s1-cam">
@@ -31,14 +31,12 @@
   <script>
     const tl = gsap.timeline({ paused: true });
     // Push-in de cámara durante toda la escena
-    tl.fromTo("#s1-cam", { scale: 1.0 }, { scale: 1.13, duration: 4, ease: "power1.inOut" }, 0);
-    // Clack 1 (0.25 s): el reflector enciende con un parpadeo de filamento sobre "¿LO BREVE"
-    tl.fromTo("#s1-texto", { "--r": "0px", "--y": "36%" }, { "--r": "520px", duration: 0.001, immediateRender: false }, 0.25);
-    tl.fromTo("#s1-haz", { opacity: 0 }, { opacity: 1, duration: 0.001, immediateRender: false }, 0.25);
-    tl.to("#s1-haz", { opacity: 0.55, duration: 0.05, ease: "none" }, 0.30);
-    tl.to("#s1-haz", { opacity: 1, duration: 0.05, ease: "none" }, 0.36);
-    // Clack 2 (1.55 s): el haz se abre de golpe y revela la pregunta completa
-    tl.to("#s1-texto", { "--r": "1150px", "--y": "47%", duration: 0.22, ease: "expo.out" }, 1.55);
+    tl.fromTo("#s1-cam", { scale: 1.0 }, { scale: 1.3, duration: 4, ease: "power2.in" }, 0);
+    // Clack 1 (0.05 s): parpadeo de filamento; el título ya está entero en el fotograma 0
+    tl.fromTo("#s1-haz", { opacity: 1 }, { opacity: 0.45, duration: 0.04, ease: "none", immediateRender: false }, 0.1);
+    tl.to("#s1-haz", { opacity: 1, duration: 0.04, ease: "none" }, 0.16);
+    // Clack 2 (1.55 s): el haz se abre de golpe y la luz se intensifica
+    tl.to("#s1-texto", { "--r": "1300px", duration: 0.22, ease: "expo.out" }, 1.55);
     tl.to("#s1-haz", { scaleX: 1.6, transformOrigin: "50% 0%", duration: 0.22, ease: "expo.out" }, 1.55);
     // Respiración del haz: la luz nunca está del todo quieta
     tl.to("#s1-texto", { "--x": "46%", duration: 1.2, ease: "sine.inOut" }, 2.0);

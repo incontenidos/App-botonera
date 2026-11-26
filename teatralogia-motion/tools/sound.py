@@ -12,21 +12,22 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parent.parent
 SR = 44100
-TOTAL = 47.8
+TOTAL = 52.0
 rng = np.random.default_rng(1647)
 
 # ---- Tabla de tiempos (segundos absolutos) ----
 T = {
-    "clack1": 0.25, "clack2": 1.55, "hum": (0.25, 8.6),
+    "clack1": 0.05, "clack2": 1.55, "hum": (0.0, 8.6),
     "s2": 4.0, "glitch": [7.9, 8.15, 8.38], "negro": (8.6, 9.0),
     "s3": 9.0, "giro": (10.2, 11.1),
     "s4": 12.0, "choque": 12.35, "trazos": [12.72, 12.92, 13.12], "split": 13.6,
     "caen": 15.0, "arena": (15.3, 16.4), "encastre": 15.85,
-    "s5": 18.0, "humo": (18.0, 19.3), "tipeo": (18.6, 0.035, 34), "cuerda": (18.3, 22.0),
-    "s6": 22.0, "s7": 28.0, "sala": (29.0, 41.0),
-    "latidos": [33.6, 34.3],
-    "s9": 35.0, "clave": 35.1, "boop": 38.4,
-    "apagon": 41.0, "placa": 41.8, "golpes": [42.8, 43.6, 44.4], "murmullo": (42.0, 47.8),
+    "s5": 18.0, "tipeo": (18.1, 0.035, 31), "cuerda": (18.1, 21.4),
+    "s6": 21.4, "s7": 27.4, "texto7": 28.7, "sala": (28.6, 41.4),
+    "s8": 31.4, "latidos": [33.0, 33.7], "piano": (32.9, 41.4),
+    "s9": 35.4, "clave": 35.5, "boop": 38.8,
+    "apagon": 41.4, "placa": 42.2, "golpes": [42.8, 44.5, 46.93], "paneos": [43.5, 44.85, 46.13],
+    "chopin": (42.2, 46.93), "murmullo": (42.2, 52.0),
 }
 
 
@@ -274,39 +275,116 @@ def crowd(d):
     return x * shape
 
 
-# ---- Música: electrónica mínima y tensa que crece hasta la escena 7 ----
-def music():
+# ---- Música ----
+def electronica():
+    """0 s → fin del scroll: pulso grave y percusión seca que crecen con la aceleración del feed; corte total en la frenada."""
     buf = np.zeros(n_(TOTAL))
-    bpm = 120
-    beat = 60 / bpm
+    beat = 0.5  # 120 BPM
     end = T["s7"]
-    t = 0.0
-    k = 0
+    s6 = T["s6"]
+
+    def g_of(t):
+        if t < s6:
+            return 0.3 + 0.25 * t / s6
+        k = (np.exp(0.56 * (t - s6)) - 1) / (np.exp(0.56 * (end - s6)) - 1)
+        return 0.55 + 0.45 * k
+
+    t, k = 0.0, 0
     while t < end:
-        # Intensidad que crece hasta 28 s
-        g = 0.35 + 0.65 * (t / end)
+        g = g_of(t)
         put(buf, kick(50, 0.5) * g, t, 0.9)
         if t >= 4.0:
             put(buf, hp(noise(0.05), 6000) * env(0.05, 0.0005, 0.01) * g, t + beat / 2, 0.35)
         if t >= 12.0:
-            # percusión seca en el contratiempo
             put(buf, click_lock() * g, t + beat * 0.75, 0.18)
         if t >= 18.0:
-            # bajo ostinato en corcheas
-            notes = [41.2, 41.2, 49.0, 41.2]
-            f = notes[k % 4]
-            put(buf, lp(np.sign(np.sin(2 * np.pi * f * tt(beat / 2))), 300) * env(beat / 2, 0.003, 0.12) * g, t, 0.4)
-            put(buf, lp(np.sign(np.sin(2 * np.pi * f * tt(beat / 2))), 300) * env(beat / 2, 0.003, 0.12) * g, t + beat / 2, 0.3)
-        if t >= 22.0:
-            for s16 in range(4):
-                put(buf, hp(noise(0.03), 7000) * env(0.03, 0.0003, 0.006) * g, t + s16 * beat / 4, 0.25)
+            f = [41.2, 41.2, 49.0, 41.2][k % 4]
+            note = lp(np.sign(np.sin(2 * np.pi * f * tt(beat / 2))), 300) * env(beat / 2, 0.003, 0.12) * g
+            put(buf, note, t, 0.4)
+            put(buf, note, t + beat / 2, 0.3)
+        if t >= s6:
+            # semicorcheas que se suman a medida que el feed acelera
+            sub = 4 if t > s6 + 2.5 else 2
+            for s16 in range(sub):
+                put(buf, hp(noise(0.03), 7000) * env(0.03, 0.0003, 0.006) * g, t + s16 * beat / sub, 0.25)
         t += beat
         k += 1
-    # Riser que tensa los últimos 4 s antes de la frenada
-    rs, re = 24.0, end
-    r = whoosh(re - rs, 200, 7000) * np.linspace(0, 1, n_(re - rs)) ** 2
-    put(buf, r, rs, 0.35)
+    r = whoosh(end - s6, 200, 7000) * np.linspace(0, 1, n_(end - s6)) ** 2.5
+    put(buf, r, s6, 0.35)
+    buf[n_(end):] = 0  # corte seco en la frenada
     return buf
+
+
+def piano_note(f, d, vel=1.0, staccato=False, bright=1.0):
+    t = tt(d)
+    B = 0.0004
+    s = np.zeros(len(t))
+    for k in range(1, 14):
+        fk = f * k * np.sqrt(1 + B * k * k)
+        if fk > 9000:
+            break
+        decay = (2.8 if f < 200 else 1.8) / (1 + 0.35 * k)
+        s += np.sin(2 * np.pi * fk * t) * np.exp(-t / decay) * (0.75 ** (k - 1)) * (bright ** (k - 1))
+    s += lp(noise(d), 2500) * np.exp(-t / 0.008) * 0.15
+    s *= np.minimum(1, t / 0.002)
+    if staccato:
+        s *= np.clip(1 - (t - 0.11) / 0.05, 0, 1)
+    return s * vel
+
+
+def piano_solo():
+    """Desde "Te obliga a estar": piano solo, cálido y espacioso (Sol mayor, 66 BPM)."""
+    a, b = T["piano"]
+    d = b - a
+    buf = np.zeros(n_(d + 4))
+    beat = 60 / 66
+    G, D, B_, A, E, C, Fs = 98.0, 146.8, 246.9, 220.0, 164.8, 130.8, 185.0
+    acordes = [(G, [G * 2, D * 2, B_ * 2]), (E, [E * 2, G * 2 * 1.0, B_ * 2]), (C, [C * 2, G * 2, E * 2 * 2]), (D, [D * 2, Fs * 2, A * 2])]
+    melodia = [587.3, 493.9, 440.0, 392.0, 440.0, 493.9, 392.0, 370.0]
+    t, i = 0.0, 0
+    while t < d:
+        root, ch = acordes[i % 4]
+        put(buf, piano_note(root, 4, 0.55, bright=0.8), t)
+        for j, f in enumerate(ch):
+            put(buf, piano_note(f, 3, 0.28, bright=0.85), t + beat * (0.5 + j * 0.5))
+        put(buf, piano_note(melodia[(2 * i) % 8] * 2, 3, 0.32, bright=0.9), t + beat * 0.02)
+        put(buf, piano_note(melodia[(2 * i + 1) % 8] * 2, 3, 0.26, bright=0.9), t + beat * 2)
+        t += beat * 4
+        i += 1
+    wet = reverb(lp(buf, 5200), 3.2, 0.42)
+    out = np.zeros(n_(TOTAL))
+    put(out, wet, a)
+    # Se apaga de golpe con el clack del apagón
+    gate(out, b, TOTAL, 0.03)
+    return out
+
+
+def chopin():
+    """Marcha fúnebre de Chopin (Sonata n.º 2, 3.er mov., dominio público): 2 compases en si bemol menor,
+    staccato y un poco apurados (≈101 BPM), con un acorde seco final en el último golpe de teatro."""
+    a, b = T["chopin"]
+    beat = (b - a) / 8
+    Bb4, Db5, C5, A4 = 466.2, 554.4, 523.3, 440.0
+    Bb1, Bb2, Db3, F3 = 58.3, 116.5, 138.6, 174.6
+    mel = [(0, Bb4), (1, Bb4), (1.75, Bb4), (2, Bb4), (4, Db5), (5, C5), (5.75, Bb4), (6, Bb4), (6.75, A4), (7, Bb4)]
+    buf = np.zeros(n_(b - a + 3))
+    for bt, f in mel:
+        put(buf, piano_note(f, 0.6, 0.55, staccato=True), bt * beat)
+        put(buf, piano_note(f / 2, 0.6, 0.3, staccato=True), bt * beat)
+    for bt in range(8):
+        if bt % 2 == 0:
+            put(buf, piano_note(Bb1, 0.6, 0.5, staccato=True), bt * beat)
+            put(buf, piano_note(Bb2, 0.6, 0.35, staccato=True), bt * beat)
+        else:
+            put(buf, piano_note(Db3, 0.6, 0.3, staccato=True), bt * beat)
+            put(buf, piano_note(F3, 0.6, 0.3, staccato=True), bt * beat)
+    # Acorde final seco (si bemol menor) justo en el tercer golpe
+    for f in [Bb1, Bb2, Db3, F3, 233.1, 277.2, 349.2, 466.2]:
+        put(buf, piano_note(f, 0.5, 0.42, staccato=True), 8 * beat)
+    wet = reverb(buf, 1.0, 0.18)
+    out = np.zeros(n_(TOTAL))
+    put(out, wet, a)
+    return out
 
 
 def gate(buf, a, b, ramp=0.004):
@@ -325,6 +403,20 @@ def write(path, x):
         w.setsampwidth(2)
         w.setframerate(SR)
         w.writeframes(data.tobytes())
+
+
+def master_lufs(src, dst, target=-14.0):
+    """Master a −14 LUFS integrados con ffmpeg loudnorm en dos pasadas (techo −1 dBTP)."""
+    import subprocess
+    r = subprocess.run(["ffmpeg", "-hide_banner", "-i", str(src), "-af",
+                        f"loudnorm=I={target}:TP=-1:LRA=20:print_format=json", "-f", "null", "-"],
+                       capture_output=True, text=True)
+    txt = r.stderr
+    m = json.loads(txt[txt.rindex("{"):txt.rindex("}") + 1])
+    af = (f"loudnorm=I={target}:TP=-1:LRA=20:measured_I={m['input_i']}:measured_TP={m['input_tp']}:"
+          f"measured_LRA={m['input_lra']}:measured_thresh={m['input_thresh']}:offset={m['target_offset']}:linear=true")
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(src), "-af", af, "-ar", str(SR), "-c:a", "pcm_s16le", str(dst)], check=True)
+    src.unlink()
 
 
 def build():
@@ -357,8 +449,6 @@ def build():
     put(sfx, sand(b - a), a, 0.6)
     put(sfx, click_lock(), T["encastre"], 0.8)
     # 5. Chéjov
-    a, b = T["humo"]
-    put(sfx, whoosh(b - a, 150, 1200), a, 0.35)
     t0, step, count = T["tipeo"]
     for i in range(count):
         put(sfx, tick_type(), t0 + i * step, 0.28)
@@ -368,9 +458,18 @@ def build():
     for st in swipe_times():
         put(sfx, swipe(), T["s6"] + st, 0.28)
     # 7. Frenada: impacto con reverb larga, después silencio y sala
-    put(sfx, brutal_impact(), T["s7"], 1.0)
+    imp = brutal_impact()
+    # La cola de la reverb se apaga antes de que aparezca "EN EL TEATRO NO HAY SCROLL"
+    lim = n_(T["texto7"] - T["s7"])
+    fade = np.ones(len(imp))
+    fade[int(lim * 0.55):lim] = np.linspace(1, 0.02, lim - int(lim * 0.55))
+    fade[lim:] = 0.02
+    put(sfx, imp * fade, T["s7"], 1.0)
     a, b = T["sala"]
-    put(amb, room(b - a), a, 0.06)
+    sala = room(b - a)
+    # Murmullo apenas audible bajo el texto quieto; un poco más presente después
+    curva = np.where(tt(b - a) < (T["s8"] - a), 0.012, 0.03)
+    put(amb, sala * curva, a)
     # 8. Latidos
     for lt in T["latidos"]:
         put(sfx, heartbeat(), lt, 0.9)
@@ -382,19 +481,25 @@ def build():
     # 11. Placa: tercera llamada y murmullo de sala
     for gt in T["golpes"]:
         put(sfx, wood_knock(), gt, 0.95)
+    for pt in T["paneos"]:
+        put(sfx, whoosh(0.5, 200, 1800), pt, 0.22)
     a, b = T["murmullo"]
     put(amb, crowd(b - a), a, 0.16)
 
-    mus = music()
+    mus = electronica() + piano_solo() + chopin()
     # Silencio total en el corte a negro de la escena 2
     for buf in (sfx, amb, mus):
         gate(buf, *T["negro"])
-    # Después del apagón, nada hasta la placa
+    # Después del apagón, nada hasta la placa (salvo el clack)
     gate(amb, T["apagon"], T["placa"] - 0.2)
-    # La música queda por debajo de los efectos (≈ −9 dB)
-    write(ROOT / "assets/audio/musica.wav", norm(mus, 0.32))
-    write(ROOT / "assets/audio/sfx.wav", norm(sfx, 0.9))
-    write(ROOT / "assets/audio/ambiente.wav", amb.clip(-1, 1))
+    sfx_n, mus_n = norm(sfx, 0.9), norm(mus, 0.28)  # música ≈ −10 dB por debajo de los efectos
+    amb = amb.clip(-1, 1)
+    write(ROOT / "assets/audio/musica.wav", mus_n)
+    write(ROOT / "assets/audio/sfx.wav", sfx_n)
+    write(ROOT / "assets/audio/ambiente.wav", amb)
+    mezcla = sfx_n + mus_n + amb
+    write(ROOT / "tools/mezcla.wav", norm(mezcla, 0.95))
+    master_lufs(ROOT / "tools/mezcla.wav", ROOT / "assets/audio/master.wav")
     (ROOT / "tools/cues.json").write_text(json.dumps(
         {"notif": notif_times(), "swipes": swipe_times(), **{k: v for k, v in T.items()}}, indent=1))
 

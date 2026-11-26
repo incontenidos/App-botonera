@@ -21,7 +21,7 @@
     // Llega desde la quietud de la escena anterior: entrada lenta, casi sin movimiento
     tl.fromTo("#s8-a", { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.45, ease: "power2.out" }, 0);
     // Se disuelve
-    tl.to("#s8-a", { opacity: 0, filter: "blur(16px)", scale: 1.06, duration: 0.4, ease: "power2.in" }, 1.25);
+    tl.to("#s8-a", { opacity: 0, filter: "blur(16px)", scale: 1.06, duration: 0.3, ease: "power2.in" }, 1.3);
     // "Te obliga a estar." aparece con el primer latido (1.6 s) y late dos veces (latidos de sound.py: 33.6 y 34.3)
     tl.fromTo("#s8-b", { opacity: 0, scale: 0.94 }, { opacity: 1, scale: 1, duration: 0.1, ease: "power3.out" }, 1.48);
     [1.6, 2.3].forEach((t) => {
@@ -32,7 +32,7 @@
       tl.fromTo("#s8-halo", { opacity: 0 }, { opacity: 1, duration: 0.07, ease: "power2.out", immediateRender: false }, t);
       tl.to("#s8-halo", { opacity: 0, duration: 0.5, ease: "power2.out" }, t + 0.1);
     });
-    tl.fromTo("#s8-cam", { scale: 1 }, { scale: 1.04, duration: 3, ease: "sine.inOut" }, 0);
+    tl.fromTo("#s8-cam", { scale: 1 }, { scale: 1.04, duration: 4, ease: "sine.inOut" }, 0);
     window.__timelines["s08-estar"] = tl;
   </script>
 </template>

@@ -2,50 +2,51 @@
   <style>
     @font-face { font-family: "DM Sans"; font-weight: 400; src: url("assets/fonts/dm-sans-latin-400-normal.woff2") format("woff2"); }
     #root { position: absolute; inset: 0; background: #000; overflow: hidden; font-family: "DM Sans", sans-serif; color: #fff; }
-    /* Ken Burns 100% → 105% sobre toda la imagen, centrado para no empujar el título hacia la interfaz */
-    #s11-kb { position: absolute; inset: 0; transform-origin: 50% 41%; }
-    .s11-capa { position: absolute; inset: 0; }
-    .s11-fondo { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
-    /* La placa ocupa todo el ancho; un poco arriba del centro para que "Viernes 21 h – Hidalgo 878" quede sobre la interfaz */
-    .s11-placa { position: absolute; left: 0; top: 140px; width: 1080px; height: 1440px; }
-    /* Capa en blanco y negro, encima: el color se enciende desde el centro hacia afuera */
-    #s11-bn { --r: 0px;
-      -webkit-mask-image: radial-gradient(circle at 50% 46%, transparent var(--r), #000 calc(var(--r) + 180px));
-      mask-image: radial-gradient(circle at 50% 46%, transparent var(--r), #000 calc(var(--r) + 180px)); }
-    /* Reflector que recorre la placa en blanco y negro */
-    #s11-spot { position: absolute; inset: 0; --sx: 540px; --sy: 330px;
-      background: radial-gradient(circle at var(--sx) var(--sy), transparent 0, transparent 220px, rgba(0,0,0,.88) 440px); }
-    #s11-pie { position: absolute; left: 0; right: 0; top: 1640px; text-align: center; font-weight: 400; font-size: 34px; letter-spacing: .04em; opacity: 0; }
+    /* La placa extendida a 9:16 (habitación estirada arriba y abajo). La cámara mueve esta capa desde la esquina 0,0 */
+    #s11-cam { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 0 0; }
+    .s11-img { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+    /* Capa B/N encima: el color se enciende desde la cara del actor de rulos hacia afuera */
+    #s11-bn { --r: -160px;
+      -webkit-mask-image: radial-gradient(circle at 815px 960px, transparent var(--r), #000 calc(var(--r) + 140px));
+      mask-image: radial-gradient(circle at 815px 960px, transparent var(--r), #000 calc(var(--r) + 140px)); }
+    #s11-negro { position: absolute; inset: 0; background: #000; }
+    #s11-pie { position: absolute; left: 0; right: 0; top: 1700px; text-align: center; font-weight: 400; font-size: 34px; letter-spacing: .04em; opacity: 0; }
   </style>
   <div id="root" data-composition-id="s11-placa" data-width="1080" data-height="1920">
-    <div id="s11-kb" data-layout-allow-overlap>
-      <div class="s11-capa" id="s11-color">
-        <img class="s11-fondo" src="assets/img/fondo-color.jpg" alt="" />
-        <img class="s11-placa" src="assets/img/placa-color.jpg" alt="El Velorio de Roberto, Teatralogía: viernes 21 h, Hidalgo 878" />
-      </div>
-      <div class="s11-capa" id="s11-bn">
-        <img class="s11-fondo" src="assets/img/fondo-bn.jpg" alt="" />
-        <img class="s11-placa" src="assets/img/placa-bn.jpg" alt="" />
-      </div>
+    <div id="s11-cam" data-layout-allow-overflow data-layout-allow-overlap>
+      <img class="s11-img" id="s11-color" src="assets/img/placa-ext-color.jpg" alt="El Velorio de Roberto, Teatralogía: viernes 21 h, Hidalgo 878" />
+      <img class="s11-img" id="s11-bn" src="assets/img/placa-ext-bn.jpg" alt="" />
     </div>
-    <div id="s11-spot" data-layout-ignore></div>
+    <div id="s11-negro"></div>
     <div id="s11-pie">@teatralogia.ciclo · Hasta el 18/12</div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
-    tl.fromTo("#s11-kb", { scale: 1 }, { scale: 1.05, duration: 6, ease: "sine.inOut" }, 0);
-    // El haz recorre la placa en blanco y negro: título → personajes → pie
-    tl.fromTo("#s11-spot", { opacity: 0, "--sx": "540px", "--sy": "330px" }, { opacity: 1, duration: 0.12, ease: "power2.out" }, 0.1);
-    tl.to("#s11-spot", { "--sx": "300px", "--sy": "760px", duration: 0.7, ease: "power3.inOut" }, 0.55);
-    tl.to("#s11-spot", { "--sx": "780px", "--sy": "900px", duration: 0.6, ease: "power3.inOut" }, 1.3);
-    tl.to("#s11-spot", { "--sx": "540px", "--sy": "1300px", duration: 0.5, ease: "power3.inOut" }, 1.95);
-    // Tercera llamada (golpes en 1.0, 1.8 y 2.6 s): el color se enciende en tres pasos desde el centro
-    tl.fromTo("#s11-bn", { "--r": "0px" }, { "--r": "260px", duration: 0.35, ease: "expo.out", immediateRender: false }, 1.0);
-    tl.to("#s11-bn", { "--r": "620px", duration: 0.35, ease: "expo.out" }, 1.8);
-    tl.to("#s11-bn", { "--r": "1500px", duration: 0.45, ease: "expo.out" }, 2.6);
-    // En el último golpe se prenden todas las luces
-    tl.to("#s11-spot", { opacity: 0, duration: 0.35, ease: "power2.out" }, 2.6);
-    tl.fromTo("#s11-pie", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 3.0);
+    // Cámara: encuadra el punto (px, py) de la imagen en el centro de pantalla con zoom s
+    const cam = (s, px, py) => ({ scale: s, x: 540 - s * px, y: 960 - s * py });
+    const RULOS = [815, 960], ACTRIZ = [630, 565], TRAJE = [258, 585];
+    // 0 s: primerísimo primer plano (300 %) del actor de rulos, en blanco y negro, saliendo del negro
+    tl.fromTo("#s11-cam", cam(3.1, ...RULOS), { ...cam(3.0, ...RULOS), duration: 0.6, ease: "power2.out" }, 0);
+    tl.fromTo("#s11-negro", { opacity: 1 }, { opacity: 0, duration: 0.25, ease: "power2.out" }, 0);
+    // Golpe 1 (0.6 s): el color se enciende en ese primer plano
+    tl.fromTo("#s11-bn", { "--r": "-160px" }, { "--r": "2600px", duration: 0.7, ease: "expo.out", immediateRender: false }, 0.6);
+    tl.to("#s11-cam", { ...cam(3.15, ...RULOS), duration: 0.08, ease: "power2.out" }, 0.6);
+    tl.to("#s11-cam", { ...cam(3.0, ...RULOS), duration: 0.3, ease: "power3.out" }, 0.68);
+    // Paneo a la actriz (≈1 s) y "golpe" de sorpresa al llegar (golpe 2 de la tercera llamada: 2.3 s)
+    tl.to("#s11-cam", { ...cam(2.8, ...ACTRIZ), duration: 1.0, ease: "power3.inOut" }, 1.3);
+    tl.to("#s11-cam", { ...cam(3.05, ...ACTRIZ), duration: 0.07, ease: "power2.out" }, 2.3);
+    tl.to("#s11-cam", { ...cam(2.8, ...ACTRIZ), duration: 0.3, ease: "power3.out" }, 2.37);
+    // Paneo al actor de traje y su "golpe" (3.6 s)
+    tl.to("#s11-cam", { ...cam(2.8, ...TRAJE), duration: 0.95, ease: "power3.inOut" }, 2.65);
+    tl.to("#s11-cam", { ...cam(3.05, ...TRAJE), duration: 0.07, ease: "power2.out" }, 3.6);
+    tl.to("#s11-cam", { ...cam(2.8, ...TRAJE), duration: 0.25, ease: "power3.out" }, 3.67);
+    // Zoom out a la placa completa, que aterriza con el tercer golpe y el acorde final (4.73 s)
+    tl.to("#s11-cam", { scale: 1, x: 0, y: 0, duration: 0.8, ease: "expo.inOut" }, 3.93);
+    tl.fromTo("#s11-cam", { filter: "blur(0px)" }, { filter: "blur(3px)", duration: 0.35, ease: "power2.in", immediateRender: false }, 3.95);
+    tl.to("#s11-cam", { filter: "blur(0px)", duration: 0.3, ease: "power2.out" }, 4.35);
+    // Placa completa a color desde 4.73 s hasta el final (5.07 s): respiración mínima de cámara
+    tl.to("#s11-cam", { scale: 1.02, x: -10.8, y: -9.6, duration: 5.0, ease: "sine.inOut" }, 4.8);
+    tl.fromTo("#s11-pie", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 5.0);
     window.__timelines["s11-placa"] = tl;
   </script>
 </template>
