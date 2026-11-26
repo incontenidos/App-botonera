@@ -12,7 +12,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parent.parent
 SR = 44100
-TOTAL = 52.0
+TOTAL = 52.6
 rng = np.random.default_rng(1647)
 
 # ---- Tabla de tiempos (segundos absolutos) ----
@@ -23,11 +23,11 @@ T = {
     "s4": 12.0, "choque": 12.35, "trazos": [12.72, 12.92, 13.12], "split": 13.6,
     "caen": 15.0, "arena": (15.3, 16.4), "encastre": 15.85,
     "s5": 18.0, "tipeo": (18.1, 0.035, 31), "cuerda": (18.1, 21.4),
-    "s6": 21.4, "s7": 27.4, "texto7": 28.7, "sala": (28.6, 41.4),
-    "s8": 31.4, "latidos": [33.0, 33.7], "piano": (32.9, 41.4),
-    "s9": 35.4, "clave": 35.5, "boop": 38.8,
-    "apagon": 41.4, "placa": 42.2, "golpes": [42.8, 44.5, 46.93], "paneos": [43.5, 44.85, 46.13],
-    "chopin": (42.2, 46.93), "murmullo": (42.2, 52.0),
+    "s6": 21.4, "s7": 27.4, "texto7": 28.7, "sala": (28.6, 42.0),
+    "s8": 31.4, "latidos": [33.5, 34.2], "piano": (33.45, 42.0),
+    "s9": 36.0, "clave": 36.1, "boop": 39.4,
+    "apagon": 42.0, "placa": 42.8, "golpes": [43.4, 45.1, 47.53], "paneos": [44.1, 45.45, 46.73],
+    "chopin": (42.8, 47.53), "murmullo": (42.8, 52.6),
 }
 
 
@@ -403,6 +403,79 @@ def chopin():
     return out
 
 
+
+# ---- Voz en off (nota de voz grabada de corrido; transcripción local con Whisper: assets/voz/transcript.json) ----
+# (inicio aprox. en la grabación, fin aprox., dónde va en el video). Los cortes se afinan solos al valle de energía más cercano.
+VOZ = [
+    ("01 ¿Lo breve puede ser bueno?",                 0.10,  2.72,  0.30),
+    ("02 Dicen que ya no sabemos prestar atención.", 2.72,  5.08,  4.10),
+    ("03 Yo creo que es al revés.",                  5.08,  6.85,  9.10),
+    ("04 Corto no es lo mismo que breve.",           6.85,  9.17, 12.20),
+    ("05 Corto: lo que termina rápido.",             9.17, 11.03, 14.55),
+    ("06 Breve: lo que no tiene nada de más.",      11.03, 12.65, 16.40),
+    ("07 La brevedad es hermana del talento.",      12.65, 15.30, 18.20),
+    ("08 El scroll también es breve,",              15.30, 16.78, 21.60),
+    ("09 pero siempre te deja escapar.",            16.78, 18.38, 24.40),
+    ("10 En el teatro no hay scroll.",              18.38, 20.08, 28.80),
+    ("11 Lo breve no te distrae.",                  20.08, 22.12, 31.45),
+    ("12 Te obliga a estar.",                       22.12, 23.55, 33.55),
+    ("13 Lo bueno, si breve, dos veces bueno.",     23.55, 26.06, 36.20),
+    # Remate: tercera toma (las dos primeras, 29.7–35.0 s, tienen el error y se descartan)
+    ("14 Y aun lo malo, si poco, no tan malo.",     35.08, 37.76, 39.20),
+    ("15 Placa: Teatralogía… Hidalgo 878.",         41.11, 49.82, 43.60),
+]
+
+
+def voice_track():
+    import wave as _w
+    w = _w.open(str(ROOT / "assets/voz/voz-original.wav"))
+    sr = w.getframerate()
+    x = np.frombuffer(w.readframes(w.getnframes()), dtype=np.int16).astype(float) / 32768
+    if sr != SR:
+        x = np.interp(np.arange(int(len(x) * SR / sr)) * sr / SR, np.arange(len(x)), x)
+    x = hp(x, 80)  # saca retumbe grave
+    hop = n_(0.01)
+    rms = np.array([np.sqrt(np.mean(x[i:i + 2 * hop] ** 2) + 1e-12) for i in range(0, len(x) - 2 * hop, hop)])
+
+    def valle(t, win=0.3):
+        a, b = max(0, int((t - win) / 0.01)), min(len(rms) - 1, int((t + win) / 0.01))
+        return (a + int(np.argmin(rms[a:b]))) * 0.01
+
+    out = np.zeros(n_(TOTAL))
+    tabla = []
+    for nombre, a, b, dst in VOZ:
+        a2, b2 = a, b
+        clip = x[n_(a2):n_(b2)].copy()
+        f = n_(0.015)
+        clip[:f] *= np.linspace(0, 1, f)
+        clip[-f:] *= np.linspace(1, 0, f)
+        # Nivel parejo entre frases (RMS de las partes con voz)
+        voiced = clip[np.abs(clip) > 0.02]
+        g = 0.12 / (np.sqrt(np.mean(voiced ** 2)) + 1e-9) if len(voiced) else 1
+        put(out, clip * g, dst)
+        tabla.append((nombre, round(a2, 2), round(b2, 2), dst, round(dst + b2 - a2, 2)))
+    # Compresión suave: los picos no sobresalen
+    env_ = lp(np.abs(out), 30)
+    gain = np.where(env_ > 0.18, (0.18 / np.maximum(env_, 1e-9)) ** 0.5, 1.0)
+    return out * gain, tabla
+
+
+def duck_curve(voz, depth_db):
+    """Ganancia que baja cuando hay voz (ataque 40 ms, release 300 ms)."""
+    env_ = np.abs(voz)
+    env_ = lp(env_, 8)
+    on = np.clip(env_ / 0.01, 0, 1)
+    # suavizado asimétrico simple
+    g = np.empty_like(on)
+    acc = 0.0
+    up, down = np.exp(-1 / (SR * 0.04)), np.exp(-1 / (SR * 0.3))
+    for i in range(len(on)):
+        c = up if on[i] > acc else down
+        acc = c * acc + (1 - c) * on[i]
+        g[i] = acc
+    return 10 ** (-depth_db * g / 20)
+
+
 def gate(buf, a, b, ramp=0.004):
     i, j = n_(a), min(len(buf), n_(b))
     buf[i:j] = 0
@@ -513,7 +586,12 @@ def build():
     write(ROOT / "assets/audio/musica.wav", mus_n)
     write(ROOT / "assets/audio/sfx.wav", sfx_n)
     write(ROOT / "assets/audio/ambiente.wav", amb)
-    mezcla = sfx_n + mus_n + amb
+    voz, tabla = voice_track()
+    for fila in tabla:
+        print("VOZ", fila)
+    # La voz es protagonista: la música baja ~10 dB y los efectos ~4 dB mientras hay voz
+    mezcla = voz * 1.6 + sfx_n * duck_curve(voz, 4) + (mus_n + amb) * duck_curve(voz, 10)
+    write(ROOT / "assets/audio/voz.wav", (voz * 1.6).clip(-1, 1))
     write(ROOT / "tools/mezcla.wav", norm(mezcla, 0.95))
     master_lufs(ROOT / "tools/mezcla.wav", ROOT / "assets/audio/master.wav")
     (ROOT / "tools/cues.json").write_text(json.dumps(

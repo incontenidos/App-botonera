@@ -1,0 +1,722 @@
+[
+  {
+    "text": "Lo",
+    "start": 0.2,
+    "end": 0.26,
+    "id": "w0"
+  },
+  {
+    "text": "breve",
+    "start": 0.27,
+    "end": 0.94,
+    "id": "w1"
+  },
+  {
+    "text": "puede",
+    "start": 1.36,
+    "end": 1.61,
+    "id": "w2"
+  },
+  {
+    "text": "ser",
+    "start": 1.61,
+    "end": 2.01,
+    "id": "w3"
+  },
+  {
+    "text": "bueno.",
+    "start": 2.01,
+    "end": 2.87,
+    "id": "w4"
+  },
+  {
+    "text": "Dicen",
+    "start": 2.87,
+    "end": 3.14,
+    "id": "w5"
+  },
+  {
+    "text": "que",
+    "start": 3.16,
+    "end": 3.31,
+    "id": "w6"
+  },
+  {
+    "text": "ya",
+    "start": 3.31,
+    "end": 3.42,
+    "id": "w7"
+  },
+  {
+    "text": "no",
+    "start": 3.42,
+    "end": 3.53,
+    "id": "w8"
+  },
+  {
+    "text": "sabemos",
+    "start": 3.53,
+    "end": 4,
+    "id": "w9"
+  },
+  {
+    "text": "para",
+    "start": 4,
+    "end": 4.15,
+    "id": "w10"
+  },
+  {
+    "text": "estar",
+    "start": 4.21,
+    "end": 4.32,
+    "id": "w11"
+  },
+  {
+    "text": "atención.",
+    "start": 4.32,
+    "end": 4.89,
+    "id": "w12"
+  },
+  {
+    "text": "Yo",
+    "start": 5.22,
+    "end": 5.58,
+    "id": "w13"
+  },
+  {
+    "text": "os",
+    "start": 5.58,
+    "end": 5.65,
+    "id": "w14"
+  },
+  {
+    "text": "creo",
+    "start": 5.66,
+    "end": 5.82,
+    "id": "w15"
+  },
+  {
+    "text": "que",
+    "start": 5.82,
+    "end": 5.95,
+    "id": "w16"
+  },
+  {
+    "text": "es",
+    "start": 6,
+    "end": 6.13,
+    "id": "w17"
+  },
+  {
+    "text": "al",
+    "start": 6.16,
+    "end": 6.3,
+    "id": "w18"
+  },
+  {
+    "text": "revés.",
+    "start": 6.32,
+    "end": 6.99,
+    "id": "w19"
+  },
+  {
+    "text": "Corto",
+    "start": 7.29,
+    "end": 7.36,
+    "id": "w20"
+  },
+  {
+    "text": "no",
+    "start": 7.36,
+    "end": 7.5,
+    "id": "w21"
+  },
+  {
+    "text": "es",
+    "start": 7.5,
+    "end": 7.64,
+    "id": "w22"
+  },
+  {
+    "text": "lo",
+    "start": 7.64,
+    "end": 7.77,
+    "id": "w23"
+  },
+  {
+    "text": "mismo",
+    "start": 7.84,
+    "end": 8.15,
+    "id": "w24"
+  },
+  {
+    "text": "que",
+    "start": 8.15,
+    "end": 8.37,
+    "id": "w25"
+  },
+  {
+    "text": "breve.",
+    "start": 8.37,
+    "end": 9,
+    "id": "w26"
+  },
+  {
+    "text": "Corto",
+    "start": 9.11,
+    "end": 9.31,
+    "id": "w27"
+  },
+  {
+    "text": "lo",
+    "start": 9.31,
+    "end": 9.42,
+    "id": "w28"
+  },
+  {
+    "text": "que",
+    "start": 9.43,
+    "end": 9.61,
+    "id": "w29"
+  },
+  {
+    "text": "termina",
+    "start": 9.61,
+    "end": 9.98,
+    "id": "w30"
+  },
+  {
+    "text": "rápido.",
+    "start": 10.04,
+    "end": 10.64,
+    "id": "w31"
+  },
+  {
+    "text": "Breve",
+    "start": 10.64,
+    "end": 10.68,
+    "id": "w32"
+  },
+  {
+    "text": "lo",
+    "start": 10.68,
+    "end": 11.2,
+    "id": "w33"
+  },
+  {
+    "text": "que",
+    "start": 11.2,
+    "end": 11.28,
+    "id": "w34"
+  },
+  {
+    "text": "no",
+    "start": 11.34,
+    "end": 11.46,
+    "id": "w35"
+  },
+  {
+    "text": "tiene",
+    "start": 11.51,
+    "end": 11.86,
+    "id": "w36"
+  },
+  {
+    "text": "nada",
+    "start": 11.86,
+    "end": 12.17,
+    "id": "w37"
+  },
+  {
+    "text": "de",
+    "start": 12.17,
+    "end": 12.34,
+    "id": "w38"
+  },
+  {
+    "text": "más.",
+    "start": 12.58,
+    "end": 12.84,
+    "id": "w39"
+  },
+  {
+    "text": "La",
+    "start": 12.84,
+    "end": 13.02,
+    "id": "w40"
+  },
+  {
+    "text": "brevedad",
+    "start": 13.02,
+    "end": 13.74,
+    "id": "w41"
+  },
+  {
+    "text": "es",
+    "start": 13.74,
+    "end": 13.86,
+    "id": "w42"
+  },
+  {
+    "text": "hermana",
+    "start": 13.9,
+    "end": 14.55,
+    "id": "w43"
+  },
+  {
+    "text": "del",
+    "start": 14.55,
+    "end": 14.8,
+    "id": "w44"
+  },
+  {
+    "text": "talento.",
+    "start": 14.82,
+    "end": 15.74,
+    "id": "w45"
+  },
+  {
+    "text": "El",
+    "start": 15.74,
+    "end": 15.8,
+    "id": "w46"
+  },
+  {
+    "text": "scroll",
+    "start": 15.8,
+    "end": 16.04,
+    "id": "w47"
+  },
+  {
+    "text": "también",
+    "start": 16.04,
+    "end": 16.18,
+    "id": "w48"
+  },
+  {
+    "text": "es",
+    "start": 16.18,
+    "end": 16.52,
+    "id": "w49"
+  },
+  {
+    "text": "breve",
+    "start": 16.52,
+    "end": 16.76,
+    "id": "w50"
+  },
+  {
+    "text": "pero",
+    "start": 16.76,
+    "end": 16.92,
+    "id": "w51"
+  },
+  {
+    "text": "siempre",
+    "start": 17.12,
+    "end": 17.44,
+    "id": "w52"
+  },
+  {
+    "text": "te",
+    "start": 17.44,
+    "end": 17.59,
+    "id": "w53"
+  },
+  {
+    "text": "deja",
+    "start": 17.59,
+    "end": 17.89,
+    "id": "w54"
+  },
+  {
+    "text": "escapar.",
+    "start": 18.19,
+    "end": 18.63,
+    "id": "w55"
+  },
+  {
+    "text": "En",
+    "start": 18.63,
+    "end": 18.73,
+    "id": "w56"
+  },
+  {
+    "text": "el",
+    "start": 18.8,
+    "end": 18.93,
+    "id": "w57"
+  },
+  {
+    "text": "teatro",
+    "start": 18.93,
+    "end": 19.37,
+    "id": "w58"
+  },
+  {
+    "text": "no",
+    "start": 19.37,
+    "end": 19.48,
+    "id": "w59"
+  },
+  {
+    "text": "hay",
+    "start": 19.48,
+    "end": 19.54,
+    "id": "w60"
+  },
+  {
+    "text": "scroll.",
+    "start": 20.07,
+    "end": 20.41,
+    "id": "w61"
+  },
+  {
+    "text": "La",
+    "start": 20.41,
+    "end": 20.56,
+    "id": "w62"
+  },
+  {
+    "text": "brevedad",
+    "start": 20.56,
+    "end": 21.07,
+    "id": "w63"
+  },
+  {
+    "text": "no",
+    "start": 21.16,
+    "end": 21.28,
+    "id": "w64"
+  },
+  {
+    "text": "te",
+    "start": 21.32,
+    "end": 21.44,
+    "id": "w65"
+  },
+  {
+    "text": "distrae.",
+    "start": 21.44,
+    "end": 22.17,
+    "id": "w66"
+  },
+  {
+    "text": "Te",
+    "start": 22.18,
+    "end": 22.4,
+    "id": "w67"
+  },
+  {
+    "text": "obliga",
+    "start": 22.4,
+    "end": 22.72,
+    "id": "w68"
+  },
+  {
+    "text": "a",
+    "start": 22.76,
+    "end": 22.83,
+    "id": "w69"
+  },
+  {
+    "text": "estar.",
+    "start": 22.93,
+    "end": 23.71,
+    "id": "w70"
+  },
+  {
+    "text": "Lo",
+    "start": 23.71,
+    "end": 23.84,
+    "id": "w71"
+  },
+  {
+    "text": "bueno",
+    "start": 24.08,
+    "end": 24.16,
+    "id": "w72"
+  },
+  {
+    "text": "si",
+    "start": 24.16,
+    "end": 24.28,
+    "id": "w73"
+  },
+  {
+    "text": "breve,",
+    "start": 24.28,
+    "end": 24.72,
+    "id": "w74"
+  },
+  {
+    "text": "dos",
+    "start": 24.72,
+    "end": 24.91,
+    "id": "w75"
+  },
+  {
+    "text": "veces",
+    "start": 24.91,
+    "end": 25.23,
+    "id": "w76"
+  },
+  {
+    "text": "bueno.",
+    "start": 25.23,
+    "end": 25.6,
+    "id": "w77"
+  },
+  {
+    "text": "Yaún",
+    "start": 25.8,
+    "end": 26.74,
+    "id": "w78"
+  },
+  {
+    "text": "lo",
+    "start": 26.96,
+    "end": 27.32,
+    "id": "w79"
+  },
+  {
+    "text": "malo",
+    "start": 27.32,
+    "end": 28.45,
+    "id": "w80"
+  },
+  {
+    "text": "si",
+    "start": 28.75,
+    "end": 29.03,
+    "id": "w81"
+  },
+  {
+    "text": "poco",
+    "start": 29.03,
+    "end": 30.18,
+    "id": "w82"
+  },
+  {
+    "text": "no",
+    "start": 30.18,
+    "end": 30.43,
+    "id": "w83"
+  },
+  {
+    "text": "tiene.",
+    "start": 30.82,
+    "end": 32.71,
+    "id": "w84"
+  },
+  {
+    "text": "Yaún",
+    "start": 32.75,
+    "end": 33.38,
+    "id": "w85"
+  },
+  {
+    "text": "lo",
+    "start": 33.41,
+    "end": 33.74,
+    "id": "w86"
+  },
+  {
+    "text": "malo.",
+    "start": 33.74,
+    "end": 34.7,
+    "id": "w87"
+  },
+  {
+    "text": "Yaún",
+    "start": 34.89,
+    "end": 35.23,
+    "id": "w88"
+  },
+  {
+    "text": "lo",
+    "start": 35.23,
+    "end": 35.45,
+    "id": "w89"
+  },
+  {
+    "text": "malo",
+    "start": 35.45,
+    "end": 35.89,
+    "id": "w90"
+  },
+  {
+    "text": "si",
+    "start": 35.94,
+    "end": 36.12,
+    "id": "w91"
+  },
+  {
+    "text": "poco",
+    "start": 36.12,
+    "end": 36.29,
+    "id": "w92"
+  },
+  {
+    "text": "no",
+    "start": 36.67,
+    "end": 36.84,
+    "id": "w93"
+  },
+  {
+    "text": "tan",
+    "start": 36.84,
+    "end": 37,
+    "id": "w94"
+  },
+  {
+    "text": "malo.",
+    "start": 37,
+    "end": 37.32,
+    "id": "w95"
+  },
+  {
+    "text": "Teatralogía.",
+    "start": 37.53,
+    "end": 42.2,
+    "id": "w96"
+  },
+  {
+    "text": "Ciclo",
+    "start": 42.33,
+    "end": 42.53,
+    "id": "w97"
+  },
+  {
+    "text": "de",
+    "start": 42.53,
+    "end": 42.64,
+    "id": "w98"
+  },
+  {
+    "text": "obras",
+    "start": 42.73,
+    "end": 42.91,
+    "id": "w99"
+  },
+  {
+    "text": "breves.",
+    "start": 42.91,
+    "end": 43.44,
+    "id": "w100"
+  },
+  {
+    "text": "El",
+    "start": 43.44,
+    "end": 43.63,
+    "id": "w101"
+  },
+  {
+    "text": "velorio",
+    "start": 43.63,
+    "end": 44.32,
+    "id": "w102"
+  },
+  {
+    "text": "de",
+    "start": 44.32,
+    "end": 44.42,
+    "id": "w103"
+  },
+  {
+    "text": "Roberto",
+    "start": 44.42,
+    "end": 44.84,
+    "id": "w104"
+  },
+  {
+    "text": "de",
+    "start": 44.84,
+    "end": 45.09,
+    "id": "w105"
+  },
+  {
+    "text": "Azul",
+    "start": 45.09,
+    "end": 45.25,
+    "id": "w106"
+  },
+  {
+    "text": "Jaure.",
+    "start": 45.31,
+    "end": 45.6,
+    "id": "w107"
+  },
+  {
+    "text": "Viernes",
+    "start": 45.6,
+    "end": 46.04,
+    "id": "w108"
+  },
+  {
+    "text": "a",
+    "start": 46.04,
+    "end": 46.16,
+    "id": "w109"
+  },
+  {
+    "text": "las",
+    "start": 46.16,
+    "end": 46.24,
+    "id": "w110"
+  },
+  {
+    "text": "21",
+    "start": 46.26,
+    "end": 46.46,
+    "id": "w111"
+  },
+  {
+    "text": "horas",
+    "start": 46.7,
+    "end": 46.8,
+    "id": "w112"
+  },
+  {
+    "text": "en",
+    "start": 46.8,
+    "end": 46.96,
+    "id": "w113"
+  },
+  {
+    "text": "en",
+    "start": 47,
+    "end": 47.1,
+    "id": "w114"
+  },
+  {
+    "text": "el",
+    "start": 47.16,
+    "end": 47.23,
+    "id": "w115"
+  },
+  {
+    "text": "piso",
+    "start": 47.24,
+    "end": 47.51,
+    "id": "w116"
+  },
+  {
+    "text": "teatro",
+    "start": 47.52,
+    "end": 47.95,
+    "id": "w117"
+  },
+  {
+    "text": "Hidalgo",
+    "start": 47.95,
+    "end": 48.46,
+    "id": "w118"
+  },
+  {
+    "text": "878.",
+    "start": 48.46,
+    "end": 49.28,
+    "id": "w119"
+  }
+]

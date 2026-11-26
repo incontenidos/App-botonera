@@ -22,7 +22,7 @@
     const POS = Array.from({ length: 64 }, () => [Math.floor(rnd() * 256), Math.floor(rnd() * 256)]);
     const g1 = document.querySelector("#ac-grano"), g2 = document.querySelector("#ac-grano2");
     const st = { t: 0 };
-    tl.fromTo(st, { t: 0 }, { t: 52, duration: 52, ease: "none", onUpdate: () => {
+    tl.fromTo(st, { t: 0 }, { t: 52.6, duration: 52.6, ease: "none", onUpdate: () => {
       const i = Math.floor(st.t * 24);
       const a = POS[i % 64], b = POS[(i * 7 + 13) % 64];
       g1.style.transform = "translate(" + a[0] + "px," + a[1] + "px)";
