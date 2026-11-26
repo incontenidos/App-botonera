@@ -410,10 +410,10 @@ VOZ = [
     ("01 ¿Lo breve puede ser bueno?",                 0.10,  2.72,  0.30),
     ("02 Dicen que ya no sabemos prestar atención.", 2.72,  5.08,  4.10),
     ("03 Yo creo que es al revés.",                  5.08,  6.85,  9.10),
-    ("04 Corto no es lo mismo que breve.",           6.85,  9.17, 12.20),
-    ("05 Corto: lo que termina rápido.",             9.17, 11.03, 14.55),
-    ("06 Breve: lo que no tiene nada de más.",      11.03, 12.65, 16.40),
-    ("07 La brevedad es hermana del talento.",      12.65, 15.30, 18.20),
+    ("04 Corto no es lo mismo que breve.",           6.85,  8.62, 12.20),
+    ("05 Corto: lo que termina rápido.",             8.62, 10.28, 14.05),
+    ("06 Breve: lo que no tiene nada de más.",      10.28, 12.65, 15.75),
+    ("07 La brevedad es hermana del talento.",      12.65, 15.30, 18.30),
     ("08 El scroll también es breve,",              15.30, 16.78, 21.60),
     ("09 pero siempre te deja escapar.",            16.78, 18.38, 24.40),
     ("10 En el teatro no hay scroll.",              18.38, 20.08, 28.80),
@@ -434,10 +434,10 @@ CADENA_VOZ = ",".join([
     "equalizer=f=450:width_type=o:width=1:g=-6",       # menos sonido de caja (celular)
     "equalizer=f=1800:width_type=o:width=1:g=2.5",     # articulación
     "lowshelf=f=130:g=2.5",                            # cuerpo / proximidad
-    "equalizer=f=3300:width_type=o:width=1.2:g=6",     # presencia e inteligibilidad
+    "equalizer=f=3300:width_type=o:width=1.2:g=4",     # presencia e inteligibilidad
     "highshelf=f=7500:g=5",                            # aire
-    "deesser=i=0.45:m=0.5:f=0.5",                      # controla las "s"
-    "acompressor=threshold=-22dB:ratio=3.2:attack=6:release=140:makeup=5:knee=4",
+    "deesser=i=0.15:m=0.5:f=0.5",                      # controla las "s" (suave: más fuerte se come consonantes)
+    "acompressor=threshold=-20dB:ratio=2.5:attack=12:release=160:makeup=4:knee=6",
     "aecho=0.85:0.5:19|31|47:0.07|0.05|0.03",          # sala de estudio muy corta, casi imperceptible
     "alimiter=limit=0.89:attack=2:release=50:level=false",
 ])
@@ -564,9 +564,9 @@ def build():
     # 5. Chéjov
     t0, step, count = T["tipeo"]
     for i in range(count):
-        put(sfx, tick_type(), t0 + i * step, 0.28)
+        put(sfx, tick_type(), t0 + i * step, 0.1)  # tipeo suave: no tapa la voz
     a, b = T["cuerda"]
-    put(sfx, cello(b - a, 55), a, 0.3)
+    put(sfx, cello(b - a, 55), a, 0.2)
     # 6. Scroll
     for st in swipe_times():
         put(sfx, swipe(), T["s6"] + st, 0.28)
@@ -613,8 +613,8 @@ def build():
     voz, tabla = voice_track()
     for fila in tabla:
         print("VOZ", fila)
-    # La voz es protagonista: la música baja ~10 dB y los efectos ~4 dB mientras hay voz
-    mezcla = voz * 1.6 + sfx_n * duck_curve(voz, 4) + (mus_n + amb) * duck_curve(voz, 10)
+    # La voz es protagonista: la música baja ~10 dB y los efectos ~8 dB mientras hay voz
+    mezcla = voz * 1.6 + sfx_n * duck_curve(voz, 8) + (mus_n + amb) * duck_curve(voz, 10)
     write(ROOT / "assets/audio/voz.wav", (voz * 1.6).clip(-1, 1))
     write(ROOT / "tools/mezcla.wav", norm(mezcla, 0.95))
     master_lufs(ROOT / "tools/mezcla.wav", ROOT / "assets/audio/master.wav")
